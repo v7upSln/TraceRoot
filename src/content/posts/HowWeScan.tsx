@@ -1,0 +1,62 @@
+import { Link } from "react-router-dom";
+
+export function HowWeScan() {
+  return (
+    <>
+      <p>
+        TraceRoot is a static scanner — we read the jar, we don't run it. Minecraft never launches, your classes
+        never get instantiated, and the file never gets a network connection to actually use. That's both the
+        safety guarantee and the limitation, and we'd rather just say that plainly than oversell it.
+      </p>
+
+      <figure>
+        <img
+          src="/blog/images/how-we-scan.jpg"
+          alt="A TraceRoot scan report showing a risk score and list of findings"
+          loading="lazy"
+        />
+        <figcaption>A finished report: verdict, risk score, and the specific things that triggered it.</figcaption>
+      </figure>
+
+      <h2>What we actually read</h2>
+      <ul>
+        <li>The zip/jar structure itself — compression ratios, entropy, nested jars, with zip-bomb and jar-in-jar guards so a malformed file can't stall the scanner.</li>
+        <li>MANIFEST.MF plus Fabric, Forge, NeoForge, and Bukkit metadata — declared name, version, authors.</li>
+        <li>Class constant pools, where URLs, IPs, Discord webhooks, shell-like strings, and reflective or native API calls tend to show up.</li>
+        <li>Package layout and known libraries — telemetry SDKs, mixins, HTTP clients — flagged as transparency notes, not automatic red flags.</li>
+      </ul>
+
+      <h2>How the verdict gets calculated</h2>
+      <p>
+        Heuristic rules look for patterns tied to stealers, destructive file operations, remote class loading, and
+        telemetry that was never disclosed. Every match becomes a finding with its own severity. Those findings
+        roll up into a 0–100 risk score and a plain verdict: <strong>Safe</strong>, <strong>Suspicious</strong>, or{" "}
+        <strong>Malicious</strong>. We also check extracted byte patterns against known malware signatures, so
+        previously identified variants get flagged even without a heuristic match.
+      </p>
+
+      <h2>Why hashes matter more than filenames</h2>
+      <p>
+        Every report is keyed by SHA-256, not filename — rename the jar and it's still the same hash. If we've
+        already scanned that exact file, you get the cached result instantly instead of waiting on a fresh scan.
+        It's also just the safer thing to share: send someone a hash and they can verify it without ever touching
+        the file itself.
+      </p>
+
+      <h2>What "Safe" actually means</h2>
+      <p>
+        Static analysis is a genuinely useful first check, not a guarantee. A heavily obfuscated or encrypted
+        payload can pass a static scan and still do something bad once it's actually running. The goal here isn't
+        to replace your judgment — it's to give you a fast, clear, shareable starting point before you decide
+        whether to install something you didn't write yourself.
+      </p>
+      <p>
+        Want the pre-install checklist? Read{" "}
+        <Link to="/blog/how-to-tell-if-a-minecraft-mod-has-malware">how to tell if a Minecraft mod has malware</Link>
+        . Curious what these findings look like in practice?{" "}
+        <Link to="/blog/common-minecraft-mod-malware-techniques">Common malware techniques</Link> walks through
+        real examples.
+      </p>
+    </>
+  );
+}

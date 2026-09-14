@@ -1,0 +1,128 @@
+@import "tailwindcss";
+
+:root {
+  --bg-base: #0f1115;
+  --bg-surface: #171a20;
+  --bg-surface-raised: #1e222a;
+  --border: #262b34;
+  --border-soft: #1c2028;
+
+  --accent: #6c7cf0;
+  --accent-dim: #5560c4;
+  --accent-soft: rgba(108, 124, 240, 0.12);
+
+  --safe: #4ade80;
+  --risk: #f87171;
+
+  --text: #e7e9ee;
+  --text-body: #c7cbd4;
+  --text-muted: #9398a6;
+  --text-faint: #5d6270;
+
+  --font-body: "Inter", ui-sans-serif, system-ui, sans-serif;
+  --font-mono: "IBM Plex Mono", ui-monospace, monospace;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+html {
+  scroll-behavior: smooth;
+}
+
+body {
+  margin: 0;
+  background: var(--bg-base);
+  color: var(--text);
+  font-family: var(--font-body);
+  -webkit-font-smoothing: antialiased;
+}
+
+:focus-visible {
+  outline: 2px solid var(--accent);
+  outline-offset: 3px;
+  border-radius: 2px;
+}
+
+::selection {
+  background: var(--accent-soft);
+  color: var(--text);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  html { scroll-behavior: auto; }
+}
+
+.blog-prose h2 {
+  margin-top: 1.75rem;
+  font-size: 1.05rem;
+  font-weight: 600;
+  color: var(--text);
+}
+
+.blog-prose p,
+.blog-prose li {
+  color: var(--text-body);
+}
+
+.blog-prose figure {
+  margin: 1.75rem 0;
+}
+
+.blog-prose figure img {
+  width: 100%;
+  border-radius: 10px;
+  border: 1px solid var(--border);
+  display: block;
+}
+
+.blog-prose figcaption {
+  margin-top: 0.5rem;
+  font-size: 0.75rem;
+  color: var(--text-faint);
+}
+
+.blog-prose blockquote {
+  margin: 1.5rem 0;
+  padding-left: 1rem;
+  border-left: 2px solid var(--border);
+  color: var(--text-muted);
+  font-style: italic;
+}
+
+.blog-prose ul,
+.blog-prose ol {
+  margin-left: 1.1rem;
+  display: grid;
+  gap: 0.45rem;
+}
+
+.blog-prose ul {
+  list-style: disc;
+}
+
+.blog-prose ol {
+  list-style: decimal;
+}
+
+.blog-prose a {
+  color: var(--accent);
+  text-decoration: underline;
+  text-underline-offset: 2px;
+}
+
+.blog-prose code {
+  font-family: var(--font-mono);
+  font-size: 0.8em;
+  color: var(--text);
+  background: var(--bg-surface-raised);
+  border: 1px solid var(--border-soft);
+  border-radius: 4px;
+  padding: 0.05rem 0.3rem;
+}
+
+.blog-prose em {
+  font-style: italic;
+  color: var(--text);
+}
