@@ -1,9 +1,8 @@
 {
-  "$schema": "./node_modules/wrangler/config-schema.json",
   "name": "traceroot",
-  "compatibility_date": "2026-09-14",
+  "main": "src/index.ts",
   "assets": {
     "directory": "./dist",
-    "not_found_handling": "single-page-application"
+    "not_found_handling": "single-page-app"
   }
 }
