@@ -1,4 +1,4 @@
-import { useCallback, useState, useMemo } from "react";
+import { useCallback, useState, useMemo, useEffect, useRef } from "react";
 import { useNavigate } from "react-router-dom";
 import { useDropzone } from "react-dropzone";
 import {
@@ -19,6 +19,27 @@ type ModType = "minecraft" | "cod";
 type InputTab = "upload" | "url" | "hash";
 
 const MAX_FILE_SIZE_BYTES = 50 * 1024 * 1024;
+const TURNSTILE_SITE_KEY = import.meta.env.VITE_TURNSTILE_SITE_KEY || "0x4AAAAAAE0aSsa8Arz0TOvq";
+
+declare global {
+  interface Window {
+    turnstile?: {
+      render: (
+        container: HTMLElement | string,
+        options: {
+          sitekey: string;
+          callback?: (token: string) => void;
+          "error-callback"?: (error?: any) => void;
+          "expired-callback"?: () => void;
+          action?: string;
+          theme?: "light" | "dark" | "auto";
+        }
+      ) => string;
+      reset: (widgetId?: string) => void;
+      remove: (widgetId?: string) => void;
+    };
+  }
+}
 
 const MOD_TYPES: Record<
   ModType,
@@ -62,7 +83,44 @@ export function Dropzone() {
   const [errorMsg, setErrorMsg] = useState<string | null>(null);
   const [notFoundHash, setNotFoundHash] = useState<string | null>(null);
 
+  const [turnstileToken, setTurnstileToken] = useState<string>("");
+  const turnstileContainerRef = useRef<HTMLDivElement | null>(null);
+  const widgetIdRef = useRef<string | null>(null);
+
   const current = MOD_TYPES[modType];
+
+  useEffect(() => {
+    let intervalId: any;
+    const initTurnstile = () => {
+      if (window.turnstile && turnstileContainerRef.current && !widgetIdRef.current) {
+        try {
+          widgetIdRef.current = window.turnstile.render(turnstileContainerRef.current, {
+            sitekey: TURNSTILE_SITE_KEY,
+            callback: (token: string) => setTurnstileToken(token),
+            "expired-callback": () => setTurnstileToken(""),
+            "error-callback": () => setTurnstileToken(""),
+            theme: "dark",
+          });
+        } catch (e) {
+          console.warn("Turnstile widget render warning:", e);
+        }
+      }
+    };
+
+    initTurnstile();
+    if (!widgetIdRef.current) {
+      intervalId = setInterval(() => {
+        if (window.turnstile) {
+          initTurnstile();
+          if (widgetIdRef.current) clearInterval(intervalId);
+        }
+      }, 300);
+    }
+
+    return () => {
+      if (intervalId) clearInterval(intervalId);
+    };
+  }, []);
 
   const hashValidation = useMemo(() => {
     const raw = hashQuery.trim();
@@ -101,9 +159,15 @@ export function Dropzone() {
       const formData = new FormData();
       formData.append("file", fileToScan);
 
+      const reqHeaders: Record<string, string> = {};
+      if (turnstileToken) {
+        reqHeaders["X-Turnstile-Token"] = turnstileToken;
+      }
+
       try {
         const response = await fetch(`${API_BASE_URL}/scan`, {
           method: "POST",
+          headers: reqHeaders,
           body: formData,
         });
 
@@ -134,9 +198,16 @@ export function Dropzone() {
         console.error("Scan error:", err);
         setErrorMsg(err.message || "Failed to reach backend scanner service.");
         setScanState("idle");
+      } finally {
+        if (window.turnstile && widgetIdRef.current) {
+          try {
+            window.turnstile.reset(widgetIdRef.current);
+            setTurnstileToken("");
+          } catch (e) {}
+        }
       }
     },
-    [navigate]
+    [navigate, turnstileToken]
   );
 
   const onDrop = useCallback(
@@ -178,10 +249,15 @@ export function Dropzone() {
     setFile(null);
     setScanState("scanning");
 
+    const reqHeaders: Record<string, string> = { "Content-Type": "application/json" };
+    if (turnstileToken) {
+      reqHeaders["X-Turnstile-Token"] = turnstileToken;
+    }
+
     try {
       const response = await fetch(`${API_BASE_URL}/scan-url`, {
         method: "POST",
-        headers: { "Content-Type": "application/json" },
+        headers: reqHeaders,
         body: JSON.stringify({ url: trimmedLink }),
       });
 
@@ -212,6 +288,13 @@ export function Dropzone() {
       console.error("URL Scan error:", err);
       setErrorMsg(err.message || "Failed to scan mod URL.");
       setScanState("idle");
+    } finally {
+      if (window.turnstile && widgetIdRef.current) {
+        try {
+          window.turnstile.reset(widgetIdRef.current);
+          setTurnstileToken("");
+        } catch (e) {}
+      }
     }
   }
 
@@ -510,6 +593,11 @@ export function Dropzone() {
           </div>
         </div>
       )}
+
+      {/* Cloudflare Turnstile Bot Protection Widget */}
+      <div className="mt-4 flex justify-center">
+        <div ref={turnstileContainerRef} />
+      </div>
 
       {(scanState === "scanning" || scanState === "searching") && (
         <div
