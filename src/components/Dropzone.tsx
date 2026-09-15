@@ -37,6 +37,7 @@ declare global {
       ) => string;
       reset: (widgetId?: string) => void;
       remove: (widgetId?: string) => void;
+      getResponse: (widgetId?: string) => string;
     };
   }
 }
@@ -138,6 +139,30 @@ export function Dropzone() {
     return { isValid: false, type: null, isHex, len };
   }, [hashQuery]);
 
+  const getActiveTurnstileToken = useCallback(async (): Promise<string> => {
+    if (turnstileToken) return turnstileToken;
+    if (window.turnstile && widgetIdRef.current) {
+      try {
+        const resp = window.turnstile.getResponse(widgetIdRef.current);
+        if (resp) {
+          setTurnstileToken(resp);
+          return resp;
+        }
+        for (let i = 0; i < 4; i++) {
+          await new Promise((resolve) => setTimeout(resolve, 250));
+          const retryResp = window.turnstile.getResponse(widgetIdRef.current);
+          if (retryResp) {
+            setTurnstileToken(retryResp);
+            return retryResp;
+          }
+        }
+      } catch (e) {
+        console.warn("Turnstile getResponse warning:", e);
+      }
+    }
+    return "";
+  }, [turnstileToken]);
+
   const handleUploadAndScan = useCallback(
     async (fileToScan: File) => {
       if (fileToScan.size > MAX_FILE_SIZE_BYTES) {
@@ -156,12 +181,13 @@ export function Dropzone() {
       setErrorMsg(null);
       setNotFoundHash(null);
 
+      const activeToken = await getActiveTurnstileToken();
       const formData = new FormData();
       formData.append("file", fileToScan);
 
       const reqHeaders: Record<string, string> = {};
-      if (turnstileToken) {
-        reqHeaders["X-Turnstile-Token"] = turnstileToken;
+      if (activeToken) {
+        reqHeaders["X-Turnstile-Token"] = activeToken;
       }
 
       try {
@@ -212,7 +238,7 @@ export function Dropzone() {
         }
       }
     },
-    [navigate, turnstileToken]
+    [navigate, getActiveTurnstileToken]
   );
 
   const onDrop = useCallback(
@@ -254,9 +280,10 @@ export function Dropzone() {
     setFile(null);
     setScanState("scanning");
 
+    const activeToken = await getActiveTurnstileToken();
     const reqHeaders: Record<string, string> = { "Content-Type": "application/json" };
-    if (turnstileToken) {
-      reqHeaders["X-Turnstile-Token"] = turnstileToken;
+    if (activeToken) {
+      reqHeaders["X-Turnstile-Token"] = activeToken;
     }
 
     try {
