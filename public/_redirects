@@ -1,3 +1,4 @@
-https://www.traceroot.xyz/* https://traceroot.xyz/:splat 301!
-http://traceroot.xyz/* https://traceroot.xyz/:splat 301!
-http://www.traceroot.xyz/* https://traceroot.xyz/:splat 301!
+# Cloudflare Static Assets / Pages Redirect Rules
+# Syntax: /source-path /target-path [status-code]
+
+/scan/* /report/:splat 301
