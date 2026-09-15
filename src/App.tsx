@@ -5,6 +5,7 @@ import { Report } from "./pages/Report";
 import { BlogIndex } from "./pages/BlogIndex";
 import { BlogPost } from "./pages/BlogPost";
 import { Privacy } from "./pages/Privacy";
+import { NotFound } from "./pages/NotFound";
 
 function App() {
   return (
@@ -16,6 +17,7 @@ function App() {
         <Route path="/privacy" element={<Privacy />} />
         <Route path="/report/:id" element={<Report />} />
         <Route path="/scan/:id" element={<LegacyScanRedirect />} />
+        <Route path="*" element={<NotFound />} />
       </Routes>
     </Layout>
   );

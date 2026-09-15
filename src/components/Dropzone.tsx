@@ -92,6 +92,7 @@ export function Dropzone() {
 
   useEffect(() => {
     let intervalId: any;
+    let attempts = 0;
     const initTurnstile = () => {
       if (window.turnstile && turnstileContainerRef.current && !widgetIdRef.current) {
         try {
@@ -111,15 +112,24 @@ export function Dropzone() {
     initTurnstile();
     if (!widgetIdRef.current) {
       intervalId = setInterval(() => {
+        attempts++;
         if (window.turnstile) {
           initTurnstile();
-          if (widgetIdRef.current) clearInterval(intervalId);
+          if (widgetIdRef.current || attempts >= 25) clearInterval(intervalId);
+        } else if (attempts >= 25) {
+          clearInterval(intervalId);
         }
       }, 300);
     }
 
     return () => {
       if (intervalId) clearInterval(intervalId);
+      if (window.turnstile && widgetIdRef.current) {
+        try {
+          window.turnstile.remove(widgetIdRef.current);
+          widgetIdRef.current = null;
+        } catch (e) {}
+      }
     };
   }, []);
 
@@ -392,13 +402,13 @@ export function Dropzone() {
             setErrorMsg(null);
             setNotFoundHash(null);
           }}
-          className={`flex flex-1 items-center justify-center gap-2 rounded-lg py-2 text-xs font-medium transition-all cursor-pointer ${
+          className={`flex flex-1 items-center justify-center gap-2 rounded-lg py-2.5 px-2 min-h-[44px] text-xs font-medium transition-all cursor-pointer ${
             activeTab === "upload"
               ? "bg-[var(--bg-surface-raised)] text-[var(--text)] shadow-sm border border-[var(--border)]"
               : "text-[var(--text-muted)] hover:text-[var(--text)]"
           }`}
         >
-          <UploadCloud className={`h-3.5 w-3.5 ${activeTab === "upload" ? "text-[var(--accent)]" : ""}`} />
+          <UploadCloud className={`h-4 w-4 ${activeTab === "upload" ? "text-[var(--accent)]" : ""}`} />
           <span>Upload File</span>
         </button>
 
@@ -409,13 +419,13 @@ export function Dropzone() {
             setErrorMsg(null);
             setNotFoundHash(null);
           }}
-          className={`flex flex-1 items-center justify-center gap-2 rounded-lg py-2 text-xs font-medium transition-all cursor-pointer ${
+          className={`flex flex-1 items-center justify-center gap-2 rounded-lg py-2.5 px-2 min-h-[44px] text-xs font-medium transition-all cursor-pointer ${
             activeTab === "url"
               ? "bg-[var(--bg-surface-raised)] text-[var(--text)] shadow-sm border border-[var(--border)]"
               : "text-[var(--text-muted)] hover:text-[var(--text)]"
           }`}
         >
-          <Link2 className={`h-3.5 w-3.5 ${activeTab === "url" ? "text-[var(--accent)]" : ""}`} />
+          <Link2 className={`h-4 w-4 ${activeTab === "url" ? "text-[var(--accent)]" : ""}`} />
           <span>Mod URL</span>
         </button>
 
@@ -426,13 +436,13 @@ export function Dropzone() {
             setErrorMsg(null);
             setNotFoundHash(null);
           }}
-          className={`flex flex-1 items-center justify-center gap-2 rounded-lg py-2 text-xs font-medium transition-all cursor-pointer ${
+          className={`flex flex-1 items-center justify-center gap-2 rounded-lg py-2.5 px-2 min-h-[44px] text-xs font-medium transition-all cursor-pointer ${
             activeTab === "hash"
               ? "bg-[var(--bg-surface-raised)] text-[var(--text)] shadow-sm border border-[var(--border)]"
               : "text-[var(--text-muted)] hover:text-[var(--text)]"
           }`}
         >
-          <Hash className={`h-3.5 w-3.5 ${activeTab === "hash" ? "text-[var(--accent)]" : ""}`} />
+          <Hash className={`h-4 w-4 ${activeTab === "hash" ? "text-[var(--accent)]" : ""}`} />
           <span>Hash Search</span>
         </button>
       </div>
@@ -440,7 +450,7 @@ export function Dropzone() {
       {activeTab === "upload" && (
         <div
           {...getRootProps()}
-          className={`flex cursor-pointer flex-col items-center gap-2.5 rounded-xl border px-8 py-12 text-center transition-colors ${
+          className={`flex cursor-pointer flex-col items-center gap-2.5 rounded-xl border px-6 py-10 sm:px-8 sm:py-12 text-center transition-colors ${
             isDragActive
               ? "border-[var(--accent)] bg-[var(--accent-soft)]"
               : "border-[var(--border)] bg-[var(--bg-surface)] hover:border-[var(--accent-dim)]"
@@ -450,13 +460,13 @@ export function Dropzone() {
           {file ? (
             <>
               <FileArchive className="h-6 w-6 text-[var(--accent)]" strokeWidth={1.75} />
-              <p className="font-[family-name:var(--font-mono)] text-sm text-[var(--text)]">
+              <p className="font-[family-name:var(--font-mono)] text-sm text-[var(--text)] break-all">
                 {file.name}
               </p>
             </>
           ) : (
             <>
-              <UploadCloud className="h-6 w-6 text-[var(--text-muted)]" strokeWidth={1.75} />
+              <UploadCloud className="h-7 w-7 text-[var(--text-muted)]" strokeWidth={1.75} />
               <p className="text-sm text-[var(--text)]">
                 Drop a <span className="font-[family-name:var(--font-mono)]">{current.ext}</span> file, or click to browse
               </p>
@@ -469,13 +479,13 @@ export function Dropzone() {
       )}
 
       {activeTab === "url" && (
-        <div className="rounded-xl border border-[var(--border)] bg-[var(--bg-surface)] p-5">
+        <div className="rounded-xl border border-[var(--border)] bg-[var(--bg-surface)] p-4 sm:p-5">
           <div className="mb-3 flex items-center justify-between text-xs text-[var(--text-faint)]">
             <span>Scan by Link</span>
             <span className="font-mono">Modrinth</span>
           </div>
 
-          <div className="flex gap-2">
+          <div className="flex flex-col sm:flex-row gap-2">
             <div className="relative flex-1">
               <Link2
                 className="pointer-events-none absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-[var(--text-faint)]"
@@ -497,7 +507,7 @@ export function Dropzone() {
               type="button"
               onClick={scanLink}
               disabled={!link.trim() || scanState === "scanning"}
-              className="rounded-lg px-5 py-2.5 text-sm font-medium text-white transition-opacity hover:opacity-90 disabled:cursor-not-allowed disabled:opacity-30 cursor-pointer"
+              className="rounded-lg px-5 py-2.5 min-h-[44px] sm:min-h-0 text-sm font-medium text-white transition-opacity hover:opacity-90 disabled:cursor-not-allowed disabled:opacity-30 cursor-pointer shrink-0"
               style={{ background: "var(--accent)" }}
             >
               Scan URL
@@ -511,7 +521,7 @@ export function Dropzone() {
       )}
 
       {activeTab === "hash" && (
-        <div className="rounded-xl border border-[var(--border)] bg-[var(--bg-surface)] p-5 shadow-sm">
+        <div className="rounded-xl border border-[var(--border)] bg-[var(--bg-surface)] p-4 sm:p-5 shadow-sm">
           <div className="mb-3 flex items-center justify-between">
             <div className="flex items-center gap-1.5 text-xs text-[var(--text-faint)]">
               <Hash className="h-3.5 w-3.5 text-[var(--accent)]" />
@@ -542,7 +552,7 @@ export function Dropzone() {
             </div>
           </div>
 
-          <div className="flex gap-2">
+          <div className="flex flex-col sm:flex-row gap-2">
             <div className="relative flex-1">
               <Search
                 className="pointer-events-none absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-[var(--text-faint)]"
@@ -582,7 +592,7 @@ export function Dropzone() {
                   <button
                     type="button"
                     onClick={pasteFromClipboard}
-                    className="flex items-center gap-1 rounded bg-[var(--bg-surface-raised)] px-1.5 py-0.5 text-[10px] text-[var(--text-muted)] hover:text-[var(--text)] cursor-pointer"
+                    className="flex items-center gap-1 rounded bg-[var(--bg-surface-raised)] px-2 py-1 min-h-[32px] sm:min-h-0 text-[10px] text-[var(--text-muted)] hover:text-[var(--text)] cursor-pointer"
                     title="Paste from clipboard"
                   >
                     <Clipboard className="h-3 w-3" />
@@ -596,7 +606,7 @@ export function Dropzone() {
               type="button"
               onClick={searchHash}
               disabled={!hashValidation.isValid || scanState === "searching"}
-              className="flex items-center gap-1.5 rounded-lg px-4 py-2.5 text-sm font-medium text-white transition-all hover:opacity-90 disabled:cursor-not-allowed disabled:opacity-30 shadow-sm cursor-pointer"
+              className="flex items-center justify-center gap-1.5 rounded-lg px-4 py-2.5 min-h-[44px] sm:min-h-0 text-sm font-medium text-white transition-all hover:opacity-90 disabled:cursor-not-allowed disabled:opacity-30 shadow-sm cursor-pointer shrink-0"
               style={{ background: "var(--accent)" }}
             >
               <Search className="h-4 w-4" />

@@ -1,9 +1,9 @@
 export const SITE_URL = (import.meta.env.VITE_SITE_URL as string | undefined)?.replace(/\/$/, "") || "https://traceroot.xyz";
 export const GA_MEASUREMENT_ID = "G-9MS9K2PV94";
 
-export const DEFAULT_TITLE = "TraceRoot — Minecraft Mod Safety Check";
+export const DEFAULT_TITLE = "TraceRoot — Free Minecraft Mod Malware & Virus Scanner (.jar)";
 export const DEFAULT_DESCRIPTION =
-  "Drop any Minecraft mod or plugin (.jar) to check for token stealers, RATs, and hidden malware before putting it in your mods folder.";
+  "Scan Minecraft mods & plugins (.jar) for token stealers, RATs, Fractureiser, and hidden malware before putting them in your mods folder. Free static bytecode analysis for Fabric, Forge, NeoForge, & Bukkit.";
 
 export type VerdictKind = "safe" | "suspicious" | "malicious";
 

@@ -1,3 +1,4 @@
+import { Link } from "react-router-dom";
 import { GitFork } from "lucide-react";
 import { GithubIcon } from "./icons/GithubIcon";
 
@@ -14,15 +15,15 @@ export function Footer() {
           </div>
 
           <div className="flex flex-wrap items-center gap-x-6 gap-y-2 text-xs text-[var(--text-faint)]">
-            <a href="/blog" className="transition-colors hover:text-[var(--text-muted)]">
+            <Link to="/blog" className="transition-colors hover:text-[var(--text-muted)]">
               Blog
-            </a>
-            <a href="/blog/how-traceroot-scans-mods" className="transition-colors hover:text-[var(--text-muted)]">
+            </Link>
+            <Link to="/blog/how-traceroot-scans-mods" className="transition-colors hover:text-[var(--text-muted)]">
               How detection works
-            </a>
-            <a href="/privacy" className="transition-colors hover:text-[var(--text-muted)]">
+            </Link>
+            <Link to="/privacy" className="transition-colors hover:text-[var(--text-muted)]">
               Privacy
-            </a>
+            </Link>
             <a
               href="https://github.com/v7upSln/TraceRoot/fork"
               target="_blank"

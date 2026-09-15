@@ -48,12 +48,12 @@ export function Home() {
       <section className="px-6 pb-12 pt-10 sm:px-10 sm:pt-14">
         <div className="mx-auto max-w-xl text-center">
           <h1 className="flex flex-wrap items-baseline justify-center gap-x-2 text-3xl font-semibold leading-tight tracking-tight text-[var(--text)] sm:text-4xl">
-            <span>Is this mod</span>
+            <span>Is this Minecraft mod</span>
             <ToggleWord />
             <span>?</span>
           </h1>
-          <p className="mx-auto mt-4 max-w-md text-sm leading-relaxed text-[var(--text-muted)]">
-            Check your Minecraft mods and plugins before you install them. We scan jar files for token stealers, hidden class loaders, and malware without ever running the file.
+          <p className="mx-auto mt-4 max-w-lg text-sm leading-relaxed text-[var(--text-muted)]">
+            Free Minecraft mod &amp; plugin malware scanner. Drop any <code className="font-mono text-xs px-1.5 py-0.5 rounded bg-[var(--bg-surface-raised)] border border-[var(--border)] text-[var(--text)]">.jar</code> file to check for Discord token stealers, RATs, and hidden class loaders before putting it in your mods folder.
           </p>
         </div>
 

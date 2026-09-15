@@ -21,6 +21,20 @@ interface ShareModalProps {
   onClose: () => void;
 }
 
+function drawRoundRect(ctx: CanvasRenderingContext2D, x: number, y: number, w: number, h: number, r: number) {
+  if (typeof ctx.roundRect === "function") {
+    ctx.roundRect(x, y, w, h, r);
+  } else {
+    ctx.beginPath();
+    ctx.moveTo(x + r, y);
+    ctx.arcTo(x + w, y, x + w, y + h, r);
+    ctx.arcTo(x + w, y + h, x, y + h, r);
+    ctx.arcTo(x, y + h, x, y, r);
+    ctx.arcTo(x, y, x + w, y, r);
+    ctx.closePath();
+  }
+}
+
 const LOADER_IMG_MAP: Record<string, string> = {
   fabric: "/fabric.png",
   neoforge: "/neoforge.png",
@@ -118,8 +132,7 @@ export function ShareModal({ report, isOpen, onClose }: ShareModalProps) {
     const badgeY = 48;
 
     ctx.fillStyle = "rgba(255, 255, 255, 0.08)";
-    ctx.beginPath();
-    ctx.roundRect(badgeX, badgeY, badgeWidth, 38, 10);
+    drawRoundRect(ctx, badgeX, badgeY, badgeWidth, 38, 10);
     ctx.fill();
     ctx.strokeStyle = "rgba(255, 255, 255, 0.18)";
     ctx.stroke();
@@ -150,8 +163,7 @@ export function ShareModal({ report, isOpen, onClose }: ShareModalProps) {
     }
 
     ctx.fillStyle = verdictBg;
-    ctx.beginPath();
-    ctx.roundRect(60, 116, width - 120, 140, 16);
+    drawRoundRect(ctx, 60, 116, width - 120, 140, 16);
     ctx.fill();
     ctx.strokeStyle = verdictBorder;
     ctx.lineWidth = 2;
@@ -178,8 +190,7 @@ export function ShareModal({ report, isOpen, onClose }: ShareModalProps) {
     ctx.fillText("/ 100", width - 170, 210);
 
     ctx.fillStyle = "rgba(255, 255, 255, 0.03)";
-    ctx.beginPath();
-    ctx.roundRect(60, 280, width - 120, 240, 16);
+    drawRoundRect(ctx, 60, 280, width - 120, 240, 16);
     ctx.fill();
     ctx.strokeStyle = "rgba(255, 255, 255, 0.08)";
     ctx.lineWidth = 1.5;
@@ -204,8 +215,7 @@ export function ShareModal({ report, isOpen, onClose }: ShareModalProps) {
     ctx.fillText(report.sha256, 90, 420);
 
     ctx.fillStyle = "rgba(255, 255, 255, 0.05)";
-    ctx.beginPath();
-    ctx.roundRect(90, 445, width - 180, 55, 10);
+    drawRoundRect(ctx, 90, 445, width - 180, 55, 10);
     ctx.fill();
 
     ctx.fillStyle = "#e2e8f0";
