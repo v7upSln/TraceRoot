@@ -13,14 +13,14 @@ export type BlogPost = {
 export const POSTS: BlogPost[] = [
   {
     slug: "how-to-tell-if-a-minecraft-mod-has-malware",
-    title: "How to tell if a Minecraft mod has malware",
+    title: "How to tell if a game mod has malware",
     description:
-      "A friend sends you a jar in Discord. Before it goes in your mods folder, here's what to actually check — hashes, file origin, and the red flags that matter.",
+      "A friend sends you a mod file in Discord. Before it goes in your mods folder, here's what to actually check — hashes, file origin, and the red flags that matter.",
     date: "2026-08-31",
     readMinutes: 3,
     category: "Safety Guide",
     image: "/blog/images/how-to-tell.jpg",
-    imageAlt: "A Discord chat window showing a .jar file attachment being shared",
+    imageAlt: "A Discord chat window showing a mod file attachment being shared",
   },
   {
     slug: "common-minecraft-mod-malware-techniques",
@@ -37,7 +37,7 @@ export const POSTS: BlogPost[] = [
     slug: "how-traceroot-scans-mods",
     title: "How TraceRoot scans mods",
     description:
-      "We never run the mod. Here's exactly what our scanner reads inside a jar, how the risk score works, and where static analysis hits its limits.",
+      "We never run the mod. Here's exactly what our scanner reads inside a file across all games, how the risk score works, and where static analysis hits its limits.",
     date: "2026-08-31",
     readMinutes: 2,
     category: "Methodology",

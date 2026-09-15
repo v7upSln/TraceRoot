@@ -47,10 +47,10 @@ const MOD_TYPES: Record<
   { label: string; ext: string; accept: Record<string, string[]>; hint: string }
 > = {
   minecraft: {
-    label: "Minecraft plugin/mod (.jar)",
+    label: "Game plugin/mod (.jar)",
     ext: ".jar",
     accept: { "application/java-archive": [".jar"], "application/zip": [".jar"] },
-    hint: "Paste a Modrinth mod URL",
+    hint: "Paste a mod URL",
   },
   cod: {
     label: "Call of Duty script (.gsc)",
@@ -61,7 +61,7 @@ const MOD_TYPES: Record<
 };
 
 const MOD_TYPE_OPTIONS: DropdownOption<ModType>[] = [
-  { value: "minecraft", label: "Minecraft plugin/mod (.jar)" },
+  { value: "minecraft", label: "Game plugin/mod (.jar)" },
   { value: "cod", label: "Call of Duty script (.gsc) (coming soon)", disabled: true },
 ];
 
