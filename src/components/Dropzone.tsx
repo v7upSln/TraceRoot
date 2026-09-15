@@ -198,18 +198,13 @@ export function Dropzone() {
         });
 
         if (!response.ok) {
-          const errorData = await response.json().catch(() => ({ detail: "Scan request failed" }));
-          let detailMsg = `Scan failed with status ${response.status}`;
-          if (errorData && errorData.detail) {
-            if (typeof errorData.detail === "string") {
-              detailMsg = errorData.detail;
-            } else if (Array.isArray(errorData.detail)) {
-              detailMsg = errorData.detail.map((e: any) => e.msg || JSON.stringify(e)).join("; ");
-            } else {
-              detailMsg = JSON.stringify(errorData.detail);
-            }
+          if (response.status === 403) {
+            throw new Error("CAPTCHA verification failed. Please try again.");
           }
-          throw new Error(detailMsg);
+          if (response.status === 413) {
+            throw new Error("File exceeds maximum allowed upload size (50 MB).");
+          }
+          throw new Error("Unable to complete scan. Please try again in a moment.");
         }
 
         const report = await response.json();
@@ -222,12 +217,7 @@ export function Dropzone() {
         navigate(`/report/${report.sha256 || "latest"}`, { state: { report } });
       } catch (err: any) {
         console.error("Scan error:", err);
-        const isFetchError = err?.message === "Failed to fetch" || err?.name === "TypeError";
-        setErrorMsg(
-          isFetchError
-            ? "Unable to reach the backend scanner service. The server may be waking up from cold start or blocked by network CORS policies. Please wait 15-30 seconds and try again."
-            : err.message || "Failed to reach backend scanner service."
-        );
+        setErrorMsg(err.message || "Scan service unavailable. Please try again in a moment.");
         setScanState("idle");
       } finally {
         if (window.turnstile && widgetIdRef.current) {
@@ -294,18 +284,10 @@ export function Dropzone() {
       });
 
       if (!response.ok) {
-        const errorData = await response.json().catch(() => ({ detail: "URL scan request failed" }));
-        let detailMsg = `URL scan failed with HTTP ${response.status}`;
-        if (errorData && errorData.detail) {
-          if (typeof errorData.detail === "string") {
-            detailMsg = errorData.detail;
-          } else if (Array.isArray(errorData.detail)) {
-            detailMsg = errorData.detail.map((e: any) => e.msg || JSON.stringify(e)).join("; ");
-          } else {
-            detailMsg = JSON.stringify(errorData.detail);
-          }
+        if (response.status === 403) {
+          throw new Error("CAPTCHA verification failed. Please try again.");
         }
-        throw new Error(detailMsg);
+        throw new Error("Unable to scan mod URL. Please check the link and try again.");
       }
 
       const report = await response.json();
@@ -318,12 +300,7 @@ export function Dropzone() {
       navigate(`/report/${report.sha256 || "latest"}`, { state: { report } });
     } catch (err: any) {
       console.error("URL Scan error:", err);
-      const isFetchError = err?.message === "Failed to fetch" || err?.name === "TypeError";
-      setErrorMsg(
-        isFetchError
-          ? "Unable to reach the backend scanner service. The server may be waking up from cold start or blocked by network CORS policies. Please wait 15-30 seconds and try again."
-          : err.message || "Failed to scan mod URL."
-      );
+      setErrorMsg(err.message || "Scanner service unavailable. Please try again in a moment.");
       setScanState("idle");
     } finally {
       if (window.turnstile && widgetIdRef.current) {
@@ -353,15 +330,13 @@ export function Dropzone() {
 
       if (response.status === 404) {
         setNotFoundHash(cleanHash);
-        setErrorMsg(`No cached scan report found for hash "${cleanHash}". This file has not been scanned yet.`);
+        setErrorMsg("No scan report found for this hash. The file has not been analyzed yet.");
         setScanState("idle");
         return;
       }
 
       if (!response.ok) {
-        const errorData = await response.json().catch(() => ({ detail: "Search failed" }));
-        let detailMsg = errorData?.detail || `Search failed with status ${response.status}`;
-        throw new Error(detailMsg);
+        throw new Error("Database lookup failed. Please try again.");
       }
 
       const report = await response.json();
@@ -374,12 +349,7 @@ export function Dropzone() {
       navigate(`/report/${report.sha256 || cleanHash}`, { state: { report } });
     } catch (err: any) {
       console.error("Hash search error:", err);
-      const isFetchError = err?.message === "Failed to fetch" || err?.name === "TypeError";
-      setErrorMsg(
-        isFetchError
-          ? "Unable to reach the backend scanner service. The server may be waking up from cold start or blocked by network CORS policies. Please wait 15-30 seconds and try again."
-          : err.message || "Failed to query hash database."
-      );
+      setErrorMsg(err.message || "Search service unavailable. Please try again in a moment.");
       setScanState("idle");
     }
   }
@@ -533,6 +503,10 @@ export function Dropzone() {
               Scan URL
             </button>
           </div>
+
+          <div className="mt-3 text-[11px] text-[var(--text-faint)]">
+            Scans directly from Modrinth (may take a few seconds)
+          </div>
         </div>
       )}
 
@@ -631,7 +605,7 @@ export function Dropzone() {
           </div>
 
           <div className="mt-3 flex items-center justify-between text-[11px] text-[var(--text-faint)]">
-            <span>Search previously analyzed mods</span>
+            <span>Search previously analyzed mods (may take a few seconds)</span>
           </div>
         </div>
       )}
