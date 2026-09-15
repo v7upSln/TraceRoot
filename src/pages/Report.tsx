@@ -449,13 +449,13 @@ export function Report() {
             <FileText className="mx-auto h-12 w-12 text-[var(--text-faint)] opacity-60" strokeWidth={1.5} />
             <h2 className="mt-4 text-xl font-semibold text-[var(--text)]">No Report Found</h2>
             <p className="mt-2 text-sm text-[var(--text-muted)]">
-              No scan results available for <span className="font-mono text-xs text-[var(--text)]">{id}</span>.
+              No scan report found for this hash. The file has not been analyzed yet.
             </p>
             <button
               onClick={() => navigate("/")}
               className="mt-6 rounded-lg bg-[var(--accent)] px-5 py-2.5 text-sm font-medium text-white transition-opacity hover:opacity-90 cursor-pointer"
             >
-              Go to Scanner
+              Upload &amp; Scan File
             </button>
           </div>
         </div>
