@@ -26,8 +26,9 @@ export function Privacy() {
         </p>
         <p>
           URL scans only accept HTTPS Modrinth hosts. We do not fetch arbitrary websites on your behalf.
-          
-          later will be more support :)
+        </p>
+        <p>
+        later will be more support :)
         </p>
       </div>
     </div>
