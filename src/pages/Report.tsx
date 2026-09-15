@@ -33,7 +33,7 @@ import { Seo } from "../components/Seo";
 import { ShareModal } from "../components/ShareModal";
 import { SITE_URL, getVerdict, verdictLabel } from "../lib/seo";
 
-const API_BASE_URL = import.meta.env.VITE_API_URL || "http://localhost:8080";
+const API_BASE_URL = import.meta.env.VITE_API_URL || "https://traceroot-be.onrender.com";
 
 export interface Finding {
   category: string;
@@ -504,12 +504,12 @@ export function Report() {
   return (
     <div className="px-4 py-8 sm:px-8 max-w-7xl mx-auto font-sans">
       <Seo
-        title={report.file_name}
-        description={`TraceRoot static analysis for ${report.file_name} (${verdictLabel(verdict)}). Risk score: ${report.risk_score}/100. SHA-256: ${report.sha256}.`}
+        title={`${report.file_name} — TraceRoot Scan`}
+        description={`${report.file_name} is marked ${verdictLabel(verdict)} (Risk score: ${report.risk_score}/100). Static check for Fabric, Forge, NeoForge, & Bukkit mods.`}
         path={`/report/${report.sha256}`}
-        noindex
+        noindex={false}
         themeColor={verdict === "safe" ? "#10b981" : verdict === "suspicious" ? "#f59e0b" : "#ef4444"}
-        image={`${SITE_URL}/og/${report.sha256}`}
+        image={`${SITE_URL}/og-default.png`}
       />
             <div className="flex items-center justify-between mb-6">
         <Link
