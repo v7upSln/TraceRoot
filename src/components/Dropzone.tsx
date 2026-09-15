@@ -64,7 +64,7 @@ const MOD_TYPE_OPTIONS: DropdownOption<ModType>[] = [
   { value: "cod", label: "Call of Duty script (.gsc) (coming soon)", disabled: true },
 ];
 
-const API_BASE_URL = import.meta.env.VITE_API_URL || "http://localhost:8080";
+const API_BASE_URL = import.meta.env.VITE_API_URL || "https://traceroot-be.onrender.com";
 
 type ScanState = "idle" | "scanning" | "searching";
 
@@ -196,7 +196,12 @@ export function Dropzone() {
         navigate(`/report/${report.sha256 || "latest"}`, { state: { report } });
       } catch (err: any) {
         console.error("Scan error:", err);
-        setErrorMsg(err.message || "Failed to reach backend scanner service.");
+        const isFetchError = err?.message === "Failed to fetch" || err?.name === "TypeError";
+        setErrorMsg(
+          isFetchError
+            ? "Unable to reach the backend scanner service. The server may be waking up from cold start or blocked by network CORS policies. Please wait 15-30 seconds and try again."
+            : err.message || "Failed to reach backend scanner service."
+        );
         setScanState("idle");
       } finally {
         if (window.turnstile && widgetIdRef.current) {
@@ -286,7 +291,12 @@ export function Dropzone() {
       navigate(`/report/${report.sha256 || "latest"}`, { state: { report } });
     } catch (err: any) {
       console.error("URL Scan error:", err);
-      setErrorMsg(err.message || "Failed to scan mod URL.");
+      const isFetchError = err?.message === "Failed to fetch" || err?.name === "TypeError";
+      setErrorMsg(
+        isFetchError
+          ? "Unable to reach the backend scanner service. The server may be waking up from cold start or blocked by network CORS policies. Please wait 15-30 seconds and try again."
+          : err.message || "Failed to scan mod URL."
+      );
       setScanState("idle");
     } finally {
       if (window.turnstile && widgetIdRef.current) {
@@ -337,7 +347,12 @@ export function Dropzone() {
       navigate(`/report/${report.sha256 || cleanHash}`, { state: { report } });
     } catch (err: any) {
       console.error("Hash search error:", err);
-      setErrorMsg(err.message || "Failed to query hash database.");
+      const isFetchError = err?.message === "Failed to fetch" || err?.name === "TypeError";
+      setErrorMsg(
+        isFetchError
+          ? "Unable to reach the backend scanner service. The server may be waking up from cold start or blocked by network CORS policies. Please wait 15-30 seconds and try again."
+          : err.message || "Failed to query hash database."
+      );
       setScanState("idle");
     }
   }
