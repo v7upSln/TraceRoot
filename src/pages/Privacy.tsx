@@ -20,12 +20,14 @@ export function Privacy() {
           private configs). Reports are retrievable by hash.
         </p>
         <p>
-          We use Google Analytics (measurement ID G-9MS9K2PV94) to understand aggregate traffic. IP
+          We use Google Analytics to understand aggregate traffic. IP
           anonymization is enabled in the tag config. We do not use analytics to identify individual scan
           contents.
         </p>
         <p>
           URL scans only accept HTTPS Modrinth hosts. We do not fetch arbitrary websites on your behalf.
+          
+          later will be more support :)
         </p>
       </div>
     </div>
