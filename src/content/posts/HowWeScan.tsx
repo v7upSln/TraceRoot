@@ -35,19 +35,11 @@ export function HowWeScan() {
         previously identified variants get flagged even without a heuristic match.
       </p>
 
-      <h2>Why hashes matter more than filenames</h2>
-      <p>
-        Every report is keyed by SHA-256, not filename — rename the file and it's still the same hash. If we've
-        already scanned that exact file, you get the cached result instantly instead of waiting on a fresh scan.
-        It's also just the safer thing to share: send someone a hash and they can verify it without ever touching
-        the file itself.
-      </p>
-
       <h2>What "Safe" actually means</h2>
       <p>
         Static analysis is a genuinely useful first check, not a guarantee. A heavily obfuscated or encrypted
         payload can pass a static scan and still do something bad once it's actually running. The goal here isn't
-        to replace your judgment — it's to give you a fast, clear, shareable starting point before you decide
+        to replace your judgment, it's to give you a fast, clear, shareable starting point before you decide
         whether to install something you didn't write yourself.
       </p>
       <p>
