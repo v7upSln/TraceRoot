@@ -491,7 +491,7 @@ export function Dropzone() {
                 Drop a <span className="font-[family-name:var(--font-mono)]">{current.ext}</span> file, or click to browse
               </p>
               <p className="text-xs text-[var(--text-faint)]">
-                Max file size: <span className="font-semibold text-[var(--text-muted)]">50 MB</span> • Scans automatically once dropped
+                Max file size: <span className="font-semibold text-[var(--text-muted)]">50 MB</span> • Scans automatically once dropped (may take a few seconds)
               </p>
             </>
           )}
@@ -646,12 +646,17 @@ export function Dropzone() {
           role="status"
           className="mt-4 flex items-center justify-center gap-3 rounded-xl border border-[var(--border)] bg-[var(--bg-surface)] py-3.5 px-4 shadow-sm animate-in fade-in duration-150"
         >
-          <Loader2 className="h-4 w-4 animate-spin text-[var(--accent)]" />
-          <span className="text-xs font-medium text-[var(--text)]">
-            {scanState === "searching"
-              ? "Querying database for cached report..."
-              : "Analyzing mod bytecode and scanning signatures..."}
-          </span>
+          <Loader2 className="h-4 w-4 animate-spin text-[var(--accent)] shrink-0" />
+          <div className="flex flex-col text-left">
+            <span className="text-xs font-medium text-[var(--text)]">
+              {scanState === "searching"
+                ? "Querying database for cached report..."
+                : "Analyzing mod bytecode and scanning signatures..."}
+            </span>
+            <span className="text-[11px] text-[var(--text-faint)]">
+              This may take a few seconds depending on file size and server load.
+            </span>
+          </div>
         </div>
       )}
 
