@@ -50,14 +50,14 @@ export function ModsDirectory() {
   return (
     <div className="mx-auto max-w-5xl px-4 py-8">
       <Seo
-        title="Popular Minecraft Mods Security Directory | TraceRoot"
-        description="Browse security audit reports and verified SHA-256 hashes for popular Minecraft mods (Sodium, OptiFine, JEI, WorldEdit). Verify mod safety before installation."
+        title="Popular Mods Security Directory | TraceRoot"
+        description="Browse security audit reports and verified SHA-256 hashes for popular mods. Verify mod safety before installation."
       />
 
       <div className="text-center max-w-2xl mx-auto mb-8">
-        <h1 className="text-3xl font-bold text-[var(--text)]">Minecraft Mod Safety Catalog</h1>
+        <h1 className="text-3xl font-bold text-[var(--text)]">Mod Safety Catalog</h1>
         <p className="mt-2 text-xs text-[var(--text-muted)]">
-          TraceRoot continuously scans and verifies SHA-256 hashes for popular Minecraft mods to protect players from token stealers, RATs, and hidden malware.
+          TraceRoot scans and verifies SHA-256 hashes for popular mods to protect players from token stealers, RATs, and hidden malware.
         </p>
 
         {/* Search Input */}
@@ -67,7 +67,7 @@ export function ModsDirectory() {
             type="text"
             value={searchQuery}
             onChange={(e) => setSearchQuery(e.target.value)}
-            placeholder="Search mods (e.g. Sodium, WorldEdit, JEI)..."
+            placeholder="Search mods..."
             className="w-full rounded-xl border border-[var(--border)] bg-[var(--bg-surface)] py-2.5 pl-10 pr-4 text-xs text-[var(--text)] placeholder-[var(--text-faint)] focus:border-[var(--accent)] focus:outline-none"
           />
         </div>

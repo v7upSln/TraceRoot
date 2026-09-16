@@ -21,7 +21,7 @@ export function Nav() {
             </a>
           )}
           <Link to="/mods" className="transition-colors hover:text-[var(--text)]">
-            Mods Catalog
+            Mods
           </Link>
           <Link to="/blog" className="transition-colors hover:text-[var(--text)]">
             Blog
