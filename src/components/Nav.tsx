@@ -20,6 +20,9 @@ export function Nav() {
               How it works
             </a>
           )}
+          <Link to="/mods" className="transition-colors hover:text-[var(--text)]">
+            Mods Catalog
+          </Link>
           <Link to="/blog" className="transition-colors hover:text-[var(--text)]">
             Blog
           </Link>

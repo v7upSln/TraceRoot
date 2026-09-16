@@ -2,6 +2,7 @@ import { Dropzone } from "../components/Dropzone";
 import { Steps } from "../components/Steps";
 import { Trust } from "../components/Trust";
 import { ToggleWord } from "../components/ToggleWord";
+import { LatestModsPanel } from "../components/LatestModsPanel";
 import { Seo } from "../components/Seo";
 import { DEFAULT_DESCRIPTION, DEFAULT_TITLE, SITE_URL } from "../lib/seo";
 import { Link } from "react-router-dom";
@@ -45,8 +46,8 @@ export function Home() {
   return (
     <>
       <Seo title={DEFAULT_TITLE} description={DEFAULT_DESCRIPTION} path="/" jsonLd={jsonLd} />
-      <section className="px-6 pb-12 pt-10 sm:px-10 sm:pt-14">
-        <div className="mx-auto max-w-xl text-center">
+      <section className="px-4 pb-12 pt-10 sm:px-8 sm:pt-14 max-w-6xl mx-auto">
+        <div className="mx-auto max-w-xl text-center mb-8">
           <h1 className="flex flex-wrap items-baseline justify-center gap-x-2 text-3xl font-semibold leading-tight tracking-tight text-[var(--text)] sm:text-4xl">
             <span>Is this mod</span>
             <ToggleWord />
@@ -57,11 +58,17 @@ export function Home() {
           </p>
         </div>
 
-        <div className="mt-10">
-          <Dropzone />
+        {/* Responsive Layout Grid: Left Secondary Panel + Right Primary Scanner */}
+        <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 items-start">
+          <div className="order-2 lg:order-1 lg:col-span-4">
+            <LatestModsPanel />
+          </div>
+          <div className="order-1 lg:order-2 lg:col-span-8">
+            <Dropzone />
+          </div>
         </div>
 
-        <p className="mx-auto mt-8 max-w-lg text-center text-xs leading-relaxed text-[var(--text-faint)]">
+        <p className="mx-auto mt-10 max-w-lg text-center text-xs leading-relaxed text-[var(--text-faint)]">
           Wondering if a file is safe before it hits your mods folder? Read{" "}
           <Link to="/blog/how-to-tell-if-a-minecraft-mod-has-malware" className="text-[var(--text-muted)] underline underline-offset-2 hover:text-[var(--text)]">
             how to tell if a game mod has malware

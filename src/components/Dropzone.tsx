@@ -47,7 +47,7 @@ const MOD_TYPES: Record<
   { label: string; ext: string; accept: Record<string, string[]>; hint: string }
 > = {
   minecraft: {
-    label: "Game plugin/mod (.jar)",
+    label: "Minecraft Mods (.jar)",
     ext: ".jar",
     accept: { "application/java-archive": [".jar"], "application/zip": [".jar"] },
     hint: "Paste a mod URL",
@@ -61,11 +61,11 @@ const MOD_TYPES: Record<
 };
 
 const MOD_TYPE_OPTIONS: DropdownOption<ModType>[] = [
-  { value: "minecraft", label: "Game plugin/mod (.jar)" },
+  { value: "minecraft", label: "Minecraft Mods (.jar)" },
   { value: "cod", label: "Call of Duty script (.gsc) (coming soon)", disabled: true },
 ];
 
-const API_BASE_URL = import.meta.env.VITE_API_URL || "https://traceroot-be.onrender.com";
+const API_BASE_URL = import.meta.env.VITE_API_URL || (import.meta.env.DEV ? "http://localhost:8080" : "https://traceroot-be.onrender.com");
 
 type ScanState = "idle" | "scanning" | "searching";
 

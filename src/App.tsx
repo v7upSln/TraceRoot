@@ -6,12 +6,16 @@ import { BlogIndex } from "./pages/BlogIndex";
 import { BlogPost } from "./pages/BlogPost";
 import { Privacy } from "./pages/Privacy";
 import { NotFound } from "./pages/NotFound";
+import { ModsDirectory } from "./pages/ModsDirectory";
+import { ModReport } from "./pages/ModReport";
 
 function App() {
   return (
     <Layout>
       <Routes>
         <Route path="/" element={<Home />} />
+        <Route path="/mods" element={<ModsDirectory />} />
+        <Route path="/mods/:slug" element={<ModReport />} />
         <Route path="/blog" element={<BlogIndex />} />
         <Route path="/blog/:slug" element={<BlogPost />} />
         <Route path="/privacy" element={<Privacy />} />

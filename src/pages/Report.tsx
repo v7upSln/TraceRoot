@@ -33,7 +33,7 @@ import { Seo } from "../components/Seo";
 import { ShareModal } from "../components/ShareModal";
 import { SITE_URL, getVerdict, verdictLabel } from "../lib/seo";
 
-const API_BASE_URL = import.meta.env.VITE_API_URL || "https://traceroot-be.onrender.com";
+const API_BASE_URL = import.meta.env.VITE_API_URL || (import.meta.env.DEV ? "http://localhost:8080" : "https://traceroot-be.onrender.com");
 
 export interface Finding {
   category: string;
