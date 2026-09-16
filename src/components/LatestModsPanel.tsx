@@ -60,15 +60,11 @@ export function LatestModsPanel() {
 
   if (loading && scans.length === 0) {
     return (
-      <div className="rounded-xl border border-[var(--border-soft)] bg-[var(--bg-surface)]/50 p-4 text-center">
+      <aside className="rounded-xl border border-[var(--border-soft)] bg-[var(--bg-surface)]/40 p-4 backdrop-blur-sm text-center">
         <Loader2 className="mx-auto h-4 w-4 animate-spin text-[var(--text-muted)]" />
-        <span className="mt-1.5 block text-[11px] text-[var(--text-muted)]">Loading scan stream...</span>
-      </div>
+        <span className="mt-1.5 block text-[11px] text-[var(--text-muted)]">Loading recent scans...</span>
+      </aside>
     );
-  }
-
-  if (scans.length === 0) {
-    return null;
   }
 
   return (
@@ -86,57 +82,63 @@ export function LatestModsPanel() {
         </Link>
       </div>
 
-      <div className="space-y-1.5">
-        {scans.map((scan) => {
-          const isClean = scan.verdict === "CLEAN" || scan.risk_score === 0;
-          const displayName = scan.mod_name || scan.file_name;
-          const targetUrl = scan.mod_slug ? `/mods/${scan.mod_slug}` : `/report/${scan.sha256}`;
+      {scans.length === 0 ? (
+        <div className="py-4 text-center text-xs text-[var(--text-muted)]">
+          No recent scan activity recorded.
+        </div>
+      ) : (
+        <div className="space-y-1.5">
+          {scans.map((scan, idx) => {
+            const isClean = scan.verdict === "CLEAN" || scan.risk_score === 0;
+            const displayName = scan.mod_name || scan.file_name;
+            const targetUrl = scan.mod_slug ? `/mods/${scan.mod_slug}` : `/report/${scan.sha256}`;
 
-          return (
-            <Link
-              key={`${scan.sha256}-${scan.scanned_at}`}
-              to={targetUrl}
-              className="group flex items-center justify-between rounded-lg p-2 transition-colors hover:bg-[var(--bg-surface-raised)] cursor-pointer"
-            >
-              <div className="flex items-center gap-2.5 overflow-hidden">
-                {scan.icon_url ? (
-                  <img
-                    src={scan.icon_url}
-                    alt={displayName}
-                    className="h-7 w-7 rounded-md border border-[var(--border-soft)] object-cover bg-black/20 shrink-0"
-                    onError={(e) => {
-                      (e.target as HTMLElement).style.display = "none";
-                    }}
-                  />
-                ) : (
-                  <div className="flex h-7 w-7 items-center justify-center rounded-md border border-[var(--border-soft)] bg-[var(--bg-surface-raised)] text-[10px] font-bold text-[var(--text-muted)] shrink-0">
-                    {displayName.charAt(0).toUpperCase()}
-                  </div>
-                )}
-                <div className="truncate">
-                  <div className="text-xs font-medium text-[var(--text-muted)] group-hover:text-[var(--text)] transition-colors truncate max-w-[140px]">
-                    {displayName}
-                  </div>
-                  <span className="text-[9px] text-[var(--text-faint)] font-mono">
-                    {formatTimeAgo(scan.scanned_at)}
-                  </span>
-                </div>
-              </div>
-
-              <span
-                className={`inline-flex items-center gap-0.5 rounded px-1.5 py-0.5 text-[9px] font-medium shrink-0 ml-1.5 ${
-                  isClean
-                    ? "bg-emerald-500/10 text-emerald-400"
-                    : "bg-amber-500/10 text-amber-400"
-                }`}
+            return (
+              <Link
+                key={`${scan.sha256 || scan.mod_slug || idx}-${idx}`}
+                to={targetUrl}
+                className="group flex items-center justify-between rounded-lg p-2 transition-colors hover:bg-[var(--bg-surface-raised)] cursor-pointer"
               >
-                {isClean ? <ShieldCheck className="h-2.5 w-2.5" /> : <AlertTriangle className="h-2.5 w-2.5" />}
-                {isClean ? "Clean" : "Risk"}
-              </span>
-            </Link>
-          );
-        })}
-      </div>
+                <div className="flex items-center gap-2.5 overflow-hidden">
+                  {scan.icon_url ? (
+                    <img
+                      src={scan.icon_url}
+                      alt={displayName}
+                      className="h-7 w-7 rounded-md border border-[var(--border-soft)] object-cover bg-black/20 shrink-0"
+                      onError={(e) => {
+                        (e.target as HTMLElement).style.display = "none";
+                      }}
+                    />
+                  ) : (
+                    <div className="flex h-7 w-7 items-center justify-center rounded-md border border-[var(--border-soft)] bg-[var(--bg-surface-raised)] text-[10px] font-bold text-[var(--text-muted)] shrink-0">
+                      {displayName.charAt(0).toUpperCase()}
+                    </div>
+                  )}
+                  <div className="truncate">
+                    <div className="text-xs font-medium text-[var(--text-muted)] group-hover:text-[var(--text)] transition-colors truncate max-w-[140px]">
+                      {displayName}
+                    </div>
+                    <span className="text-[9px] text-[var(--text-faint)] font-mono">
+                      {formatTimeAgo(scan.scanned_at)}
+                    </span>
+                  </div>
+                </div>
+
+                <span
+                  className={`inline-flex items-center gap-0.5 rounded px-1.5 py-0.5 text-[9px] font-medium shrink-0 ml-1.5 ${
+                    isClean
+                      ? "bg-emerald-500/10 text-emerald-400"
+                      : "bg-amber-500/10 text-amber-400"
+                  }`}
+                >
+                  {isClean ? <ShieldCheck className="h-2.5 w-2.5" /> : <AlertTriangle className="h-2.5 w-2.5" />}
+                  {isClean ? "Clean" : "Risk"}
+                </span>
+              </Link>
+            );
+          })}
+        </div>
+      )}
     </aside>
   );
 }
