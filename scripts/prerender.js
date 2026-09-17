@@ -84,7 +84,8 @@ function escapeXml(unsafe) {
 }
 
 function injectHeadAndBody(htmlTemplate, route) {
-  const canonicalUrl = `${BASE_URL}${route.path === "/" ? "/" : route.path}`;
+  const routePath = route.path === "/" ? "/" : route.path.endsWith("/") ? route.path : `${route.path}/`;
+  const canonicalUrl = `${BASE_URL}${routePath}`;
   
   let html = htmlTemplate;
 
