@@ -7,6 +7,10 @@
     "not_found_handling": "single-page-application"
   },
   "observability": {
-    "enabled": false
+    "logs": {
+      "enabled": true,
+      "invocation_logs": true,
+      "persist": true
+    }
   }
 }
