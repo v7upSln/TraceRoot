@@ -6,271 +6,271 @@
     <priority>1.0</priority>
   </url>
   <url>
-    <loc>https://traceroot.xyz/mods</loc>
+    <loc>https://traceroot.xyz/mods/</loc>
     <changefreq>daily</changefreq>
     <priority>0.9</priority>
   </url>
   <url>
-    <loc>https://traceroot.xyz/blog</loc>
+    <loc>https://traceroot.xyz/blog/</loc>
     <changefreq>weekly</changefreq>
     <priority>0.8</priority>
   </url>
   <url>
-    <loc>https://traceroot.xyz/blog/how-to-tell-if-a-minecraft-mod-has-malware</loc>
+    <loc>https://traceroot.xyz/blog/how-to-tell-if-a-minecraft-mod-has-malware/</loc>
     <changefreq>monthly</changefreq>
     <priority>0.9</priority>
   </url>
   <url>
-    <loc>https://traceroot.xyz/blog/common-minecraft-mod-malware-techniques</loc>
+    <loc>https://traceroot.xyz/blog/common-minecraft-mod-malware-techniques/</loc>
     <changefreq>monthly</changefreq>
     <priority>0.9</priority>
   </url>
   <url>
-    <loc>https://traceroot.xyz/blog/how-traceroot-scans-mods</loc>
+    <loc>https://traceroot.xyz/blog/how-traceroot-scans-mods/</loc>
     <changefreq>monthly</changefreq>
     <priority>0.9</priority>
   </url>
   <url>
-    <loc>https://traceroot.xyz/privacy</loc>
+    <loc>https://traceroot.xyz/privacy/</loc>
     <changefreq>yearly</changefreq>
     <priority>0.3</priority>
   </url>
   <url>
-    <loc>https://traceroot.xyz/mods/fabric-api</loc>
+    <loc>https://traceroot.xyz/mods/fabric-api/</loc>
     <lastmod>2026-09-16</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.8</priority>
   </url>
   <url>
-    <loc>https://traceroot.xyz/mods/sodium</loc>
+    <loc>https://traceroot.xyz/mods/sodium/</loc>
     <lastmod>2026-09-16</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.8</priority>
   </url>
   <url>
-    <loc>https://traceroot.xyz/mods/iris</loc>
+    <loc>https://traceroot.xyz/mods/iris/</loc>
     <lastmod>2026-09-16</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.8</priority>
   </url>
   <url>
-    <loc>https://traceroot.xyz/mods/cloth-config</loc>
+    <loc>https://traceroot.xyz/mods/cloth-config/</loc>
     <lastmod>2026-09-16</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.8</priority>
   </url>
   <url>
-    <loc>https://traceroot.xyz/mods/entityculling</loc>
+    <loc>https://traceroot.xyz/mods/entityculling/</loc>
     <lastmod>2026-09-16</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.8</priority>
   </url>
   <url>
-    <loc>https://traceroot.xyz/mods/ferrite-core</loc>
+    <loc>https://traceroot.xyz/mods/ferrite-core/</loc>
     <lastmod>2026-09-16</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.8</priority>
   </url>
   <url>
-    <loc>https://traceroot.xyz/mods/modmenu</loc>
+    <loc>https://traceroot.xyz/mods/modmenu/</loc>
     <lastmod>2026-09-16</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.8</priority>
   </url>
   <url>
-    <loc>https://traceroot.xyz/mods/lithium</loc>
+    <loc>https://traceroot.xyz/mods/lithium/</loc>
     <lastmod>2026-09-16</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.8</priority>
   </url>
   <url>
-    <loc>https://traceroot.xyz/mods/immediatelyfast</loc>
+    <loc>https://traceroot.xyz/mods/immediatelyfast/</loc>
     <lastmod>2026-09-16</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.8</priority>
   </url>
   <url>
-    <loc>https://traceroot.xyz/mods/yacl</loc>
+    <loc>https://traceroot.xyz/mods/yacl/</loc>
     <lastmod>2026-09-16</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.8</priority>
   </url>
   <url>
-    <loc>https://traceroot.xyz/mods/fabric-language-kotlin</loc>
+    <loc>https://traceroot.xyz/mods/fabric-language-kotlin/</loc>
     <lastmod>2026-09-16</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.8</priority>
   </url>
   <url>
-    <loc>https://traceroot.xyz/mods/xaeros-minimap</loc>
+    <loc>https://traceroot.xyz/mods/xaeros-minimap/</loc>
     <lastmod>2026-09-16</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.8</priority>
   </url>
   <url>
-    <loc>https://traceroot.xyz/mods/entitytexturefeatures</loc>
+    <loc>https://traceroot.xyz/mods/entitytexturefeatures/</loc>
     <lastmod>2026-09-16</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.8</priority>
   </url>
   <url>
-    <loc>https://traceroot.xyz/mods/architectury-api</loc>
+    <loc>https://traceroot.xyz/mods/architectury-api/</loc>
     <lastmod>2026-09-16</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.8</priority>
   </url>
   <url>
-    <loc>https://traceroot.xyz/mods/xaeros-world-map</loc>
+    <loc>https://traceroot.xyz/mods/xaeros-world-map/</loc>
     <lastmod>2026-09-16</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.8</priority>
   </url>
   <url>
-    <loc>https://traceroot.xyz/mods/sodium-extra</loc>
+    <loc>https://traceroot.xyz/mods/sodium-extra/</loc>
     <lastmod>2026-09-16</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.8</priority>
   </url>
   <url>
-    <loc>https://traceroot.xyz/mods/entity-model-features</loc>
+    <loc>https://traceroot.xyz/mods/entity-model-features/</loc>
     <lastmod>2026-09-16</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.8</priority>
   </url>
   <url>
-    <loc>https://traceroot.xyz/mods/appleskin</loc>
+    <loc>https://traceroot.xyz/mods/appleskin/</loc>
     <lastmod>2026-09-16</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.8</priority>
   </url>
   <url>
-    <loc>https://traceroot.xyz/mods/not-enough-animations</loc>
+    <loc>https://traceroot.xyz/mods/not-enough-animations/</loc>
     <lastmod>2026-09-16</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.8</priority>
   </url>
   <url>
-    <loc>https://traceroot.xyz/mods/veinminer</loc>
+    <loc>https://traceroot.xyz/mods/veinminer/</loc>
     <lastmod>2026-09-16</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.8</priority>
   </url>
   <url>
-    <loc>https://traceroot.xyz/mods/reeses-sodium-options</loc>
+    <loc>https://traceroot.xyz/mods/reeses-sodium-options/</loc>
     <lastmod>2026-09-16</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.8</priority>
   </url>
   <url>
-    <loc>https://traceroot.xyz/mods/modernfix</loc>
+    <loc>https://traceroot.xyz/mods/modernfix/</loc>
     <lastmod>2026-09-16</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.8</priority>
   </url>
   <url>
-    <loc>https://traceroot.xyz/mods/jei</loc>
+    <loc>https://traceroot.xyz/mods/jei/</loc>
     <lastmod>2026-09-16</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.8</priority>
   </url>
   <url>
-    <loc>https://traceroot.xyz/mods/3dskinlayers</loc>
+    <loc>https://traceroot.xyz/mods/3dskinlayers/</loc>
     <lastmod>2026-09-16</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.8</priority>
   </url>
   <url>
-    <loc>https://traceroot.xyz/mods/continuity</loc>
+    <loc>https://traceroot.xyz/mods/continuity/</loc>
     <lastmod>2026-09-16</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.8</priority>
   </url>
   <url>
-    <loc>https://traceroot.xyz/mods/geckolib</loc>
+    <loc>https://traceroot.xyz/mods/geckolib/</loc>
     <lastmod>2026-09-16</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.8</priority>
   </url>
   <url>
-    <loc>https://traceroot.xyz/mods/simple-voice-chat</loc>
+    <loc>https://traceroot.xyz/mods/simple-voice-chat/</loc>
     <lastmod>2026-09-16</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.8</priority>
   </url>
   <url>
-    <loc>https://traceroot.xyz/mods/jade</loc>
+    <loc>https://traceroot.xyz/mods/jade/</loc>
     <lastmod>2026-09-16</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.8</priority>
   </url>
   <url>
-    <loc>https://traceroot.xyz/mods/zoomify</loc>
+    <loc>https://traceroot.xyz/mods/zoomify/</loc>
     <lastmod>2026-09-16</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.8</priority>
   </url>
   <url>
-    <loc>https://traceroot.xyz/mods/moreculling</loc>
+    <loc>https://traceroot.xyz/mods/moreculling/</loc>
     <lastmod>2026-09-16</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.8</priority>
   </url>
   <url>
-    <loc>https://traceroot.xyz/mods/dynamic-fps</loc>
+    <loc>https://traceroot.xyz/mods/dynamic-fps/</loc>
     <lastmod>2026-09-16</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.8</priority>
   </url>
   <url>
-    <loc>https://traceroot.xyz/mods/fancymenu</loc>
+    <loc>https://traceroot.xyz/mods/fancymenu/</loc>
     <lastmod>2026-09-16</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.8</priority>
   </url>
   <url>
-    <loc>https://traceroot.xyz/mods/forge-config-api-port</loc>
+    <loc>https://traceroot.xyz/mods/forge-config-api-port/</loc>
     <lastmod>2026-09-16</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.8</priority>
   </url>
   <url>
-    <loc>https://traceroot.xyz/mods/placeholder-api</loc>
+    <loc>https://traceroot.xyz/mods/placeholder-api/</loc>
     <lastmod>2026-09-16</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.8</priority>
   </url>
   <url>
-    <loc>https://traceroot.xyz/mods/collective</loc>
+    <loc>https://traceroot.xyz/mods/collective/</loc>
     <lastmod>2026-09-16</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.8</priority>
   </url>
   <url>
-    <loc>https://traceroot.xyz/mods/puzzles-lib</loc>
+    <loc>https://traceroot.xyz/mods/puzzles-lib/</loc>
     <lastmod>2026-09-16</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.8</priority>
   </url>
   <url>
-    <loc>https://traceroot.xyz/mods/konkrete</loc>
+    <loc>https://traceroot.xyz/mods/konkrete/</loc>
     <lastmod>2026-09-16</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.8</priority>
   </url>
   <url>
-    <loc>https://traceroot.xyz/mods/balm</loc>
+    <loc>https://traceroot.xyz/mods/balm/</loc>
     <lastmod>2026-09-16</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.8</priority>
   </url>
   <url>
-    <loc>https://traceroot.xyz/mods/mouse-tweaks</loc>
+    <loc>https://traceroot.xyz/mods/mouse-tweaks/</loc>
     <lastmod>2026-09-16</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.8</priority>
   </url>
   <url>
-    <loc>https://traceroot.xyz/mods/veinminer-client</loc>
+    <loc>https://traceroot.xyz/mods/veinminer-client/</loc>
     <lastmod>2026-09-16</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.8</priority>
