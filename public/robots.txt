@@ -1,18 +1,13 @@
 User-agent: *
 Allow: /
-Allow: /blog
 Allow: /blog/
+Allow: /mods/
 Allow: /privacy
 
-Disallow: /scan
 Disallow: /scan/
-Disallow: /report
 Disallow: /report/
-Disallow: /share
 Disallow: /share/
-Disallow: /og
 Disallow: /og/
-Disallow: /search
 Disallow: /search/
 Disallow: /health
 
