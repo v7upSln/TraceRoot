@@ -22,8 +22,9 @@ export function Seo({
   themeColor = "#10b981",
   jsonLd,
 }: SeoProps) {
-  const cleanPath = path === "/" ? "" : path.startsWith("/") ? path : `/${path}`;
-  const url = `${SITE_URL}${cleanPath || "/"}`;
+  const formattedPath = path === "/" ? "/" : path.endsWith("/") ? path : `${path}/`;
+  const cleanPath = formattedPath.startsWith("/") ? formattedPath : `/${formattedPath}`;
+  const url = `${SITE_URL}${cleanPath}`;
   const fullTitle = title.includes("TraceRoot") ? title : `${title} — TraceRoot`;
 
   return (
