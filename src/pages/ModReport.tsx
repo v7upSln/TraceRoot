@@ -149,11 +149,8 @@ export function ModReport() {
       <Seo
         title={`Is ${mod.name} Safe? Security Scan Report | TraceRoot`}
         description={`TraceRoot safety audit report for ${mod.name} v${mod.latest_version}. Safety Verdict: ${mod.verdict} (Risk Score: ${mod.risk_score}/100). Verified SHA-256 hash.`}
-      />
-
-      <script
-        type="application/ld+json"
-        dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
+        path={`/mods/${slug}`}
+        jsonLd={jsonLd}
       />
 
       {/* Breadcrumb Navigation */}

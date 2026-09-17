@@ -52,6 +52,7 @@ export function ModsDirectory() {
       <Seo
         title="Popular Mods Security Directory | TraceRoot"
         description="Browse security audit reports and verified SHA-256 hashes for popular mods. Verify mod safety before installation."
+        path="/mods"
       />
 
       <div className="text-center max-w-2xl mx-auto mb-8">
