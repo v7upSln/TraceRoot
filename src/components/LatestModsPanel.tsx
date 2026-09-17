@@ -1,6 +1,5 @@
 import { useEffect, useState, useCallback } from "react";
-import { Link } from "react-router-dom";
-import { ShieldCheck, AlertTriangle, ArrowRight, Activity, Loader2 } from "lucide-react";
+import { ShieldCheck, AlertTriangle, Activity, Loader2 } from "lucide-react";
 
 const API_BASE_URL = import.meta.env.VITE_API_URL || (import.meta.env.DEV ? "http://localhost:8080" : "https://traceroot-be.onrender.com");
 
@@ -37,7 +36,13 @@ export function LatestModsPanel() {
   const [loading, setLoading] = useState(true);
 
   const fetchRecentScans = useCallback(() => {
-    fetch(`${API_BASE_URL}/api/scans/recent?limit=6`)
+    fetch(`${API_BASE_URL}/api/scans/recent?limit=6`, {
+      cache: "no-store",
+      headers: {
+        "Cache-Control": "no-cache, no-store, must-revalidate",
+        "Pragma": "no-cache",
+      },
+    })
       .then((res) => res.json())
       .then((data) => {
         if (data.scans) {
@@ -72,14 +77,8 @@ export function LatestModsPanel() {
       <div className="flex items-center justify-between border-b border-[var(--border-soft)] pb-2.5 mb-2.5">
         <div className="flex items-center gap-1.5 text-[var(--text-muted)]">
           <Activity className="h-3.5 w-3.5 text-[var(--accent)] opacity-80 animate-pulse" />
-          <h2 className="text-[11px] font-semibold uppercase tracking-wider">Recently Verified</h2>
+          <h2 className="text-[11px] font-semibold uppercase tracking-wider">Recent Scans</h2>
         </div>
-        <Link
-          to="/mods"
-          className="text-[10px] font-medium text-[var(--text-muted)] hover:text-[var(--text)] transition-colors flex items-center gap-0.5"
-        >
-          Catalog <ArrowRight className="h-3 w-3" />
-        </Link>
       </div>
 
       {scans.length === 0 ? (
@@ -91,13 +90,11 @@ export function LatestModsPanel() {
           {scans.map((scan, idx) => {
             const isClean = scan.verdict === "CLEAN" || scan.risk_score === 0;
             const displayName = scan.mod_name || scan.file_name;
-            const targetUrl = scan.mod_slug ? `/mods/${scan.mod_slug}` : `/report/${scan.sha256}`;
 
             return (
-              <Link
+              <div
                 key={`${scan.sha256 || scan.mod_slug || idx}-${idx}`}
-                to={targetUrl}
-                className="group flex items-center justify-between rounded-lg p-2 transition-colors hover:bg-[var(--bg-surface-raised)] cursor-pointer"
+                className="flex items-center justify-between rounded-lg p-2 bg-[var(--bg-surface)]/20 hover:bg-[var(--bg-surface-raised)]/60 transition-colors border border-transparent hover:border-[var(--border-soft)]"
               >
                 <div className="flex items-center gap-2.5 overflow-hidden">
                   {scan.icon_url ? (
@@ -115,7 +112,7 @@ export function LatestModsPanel() {
                     </div>
                   )}
                   <div className="truncate">
-                    <div className="text-xs font-medium text-[var(--text-muted)] group-hover:text-[var(--text)] transition-colors truncate max-w-[140px]">
+                    <div className="text-xs font-medium text-[var(--text)] truncate max-w-[140px]">
                       {displayName}
                     </div>
                     <span className="text-[9px] text-[var(--text-faint)] font-mono">
@@ -134,7 +131,7 @@ export function LatestModsPanel() {
                   {isClean ? <ShieldCheck className="h-2.5 w-2.5" /> : <AlertTriangle className="h-2.5 w-2.5" />}
                   {isClean ? "Clean" : "Risk"}
                 </span>
-              </Link>
+              </div>
             );
           })}
         </div>
