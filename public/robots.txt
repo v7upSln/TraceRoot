@@ -2,10 +2,10 @@ User-agent: *
 Allow: /
 Allow: /blog/
 Allow: /mods/
+Allow: /report/
 Allow: /privacy
 
 Disallow: /scan/
-Disallow: /report/
 Disallow: /share/
 Disallow: /og/
 Disallow: /search/
