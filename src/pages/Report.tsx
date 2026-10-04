@@ -504,12 +504,30 @@ export function Report() {
   return (
     <div className="px-4 py-8 sm:px-8 max-w-7xl mx-auto font-sans">
       <Seo
-        title={`${report.file_name} — TraceRoot Scan`}
-        description={`${report.file_name} is marked ${verdictLabel(verdict)} (Risk score: ${report.risk_score}/100). Static check for Fabric, Forge, NeoForge, & Bukkit mods.`}
+        title={`Is ${report.file_name} safe? ${verdictLabel(verdict)} — TraceRoot Scan Report`}
+        description={`TraceRoot static analysis of ${report.file_name}: verdict ${verdictLabel(verdict)} (risk score ${report.risk_score}/100)${
+          report.mod_loader && report.mod_loader !== "unknown" ? `, ${report.mod_loader} mod` : ""
+        }. SHA-256 ${String(report.sha256).slice(0, 16)}… Review findings, file hashes and scan details.`}
         path={`/report/${report.sha256}`}
         noindex={false}
         themeColor={verdict === "safe" ? "#10b981" : verdict === "suspicious" ? "#f59e0b" : "#ef4444"}
         image={`${SITE_URL}/og-default.png`}
+        jsonLd={{
+          "@context": "https://schema.org",
+          "@type": "WebPage",
+          name: `${report.file_name} — scan report`,
+          url: `${SITE_URL}/report/${report.sha256}/`,
+          description: `Static analysis report for ${report.file_name}. Verdict: ${verdictLabel(verdict)}, risk score ${report.risk_score}/100.`,
+          dateModified: report.last_scanned_at || undefined,
+          isPartOf: { "@type": "WebSite", name: "TraceRoot", url: SITE_URL },
+          breadcrumb: {
+            "@type": "BreadcrumbList",
+            itemListElement: [
+              { "@type": "ListItem", position: 1, name: "TraceRoot", item: `${SITE_URL}/` },
+              { "@type": "ListItem", position: 2, name: report.file_name, item: `${SITE_URL}/report/${report.sha256}/` },
+            ],
+          },
+        }}
       />
             <div className="flex items-center justify-between mb-6">
         <Link
