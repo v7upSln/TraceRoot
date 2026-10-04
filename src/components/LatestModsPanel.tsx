@@ -1,4 +1,5 @@
 import { useEffect, useState, useCallback } from "react";
+import { Link } from "react-router-dom";
 import { ShieldCheck, AlertTriangle, Activity, Loader2 } from "lucide-react";
 
 const API_BASE_URL = import.meta.env.VITE_API_URL || (import.meta.env.DEV ? "http://localhost:8080" : "https://traceroot-be.onrender.com");
@@ -31,36 +32,68 @@ function formatTimeAgo(isoString?: string): string {
   }
 }
 
-export function LatestModsPanel() {
-  const [scans, setScans] = useState<ScanItem[]>([]);
-  const [loading, setLoading] = useState(true);
+const CACHE_KEY = "traceroot:recent-scans:v1";
+const CACHE_MAX_AGE_MS = 10 * 60 * 1000; // show cached data instantly if <10 min old
+const REFRESH_INTERVAL_MS = 60 * 1000;
 
-  const fetchRecentScans = useCallback(() => {
-    fetch(`${API_BASE_URL}/api/scans/recent?limit=6`, {
-      cache: "no-store",
-      headers: {
-        "Cache-Control": "no-cache, no-store, must-revalidate",
-        "Pragma": "no-cache",
-      },
-    })
-      .then((res) => res.json())
+function readCachedScans(): ScanItem[] {
+  try {
+    const raw = localStorage.getItem(CACHE_KEY);
+    if (!raw) return [];
+    const parsed = JSON.parse(raw) as { ts: number; scans: ScanItem[] };
+    if (!Array.isArray(parsed.scans) || Date.now() - parsed.ts > CACHE_MAX_AGE_MS) return [];
+    return parsed.scans;
+  } catch {
+    return [];
+  }
+}
+
+function writeCachedScans(scans: ScanItem[]) {
+  try {
+    localStorage.setItem(CACHE_KEY, JSON.stringify({ ts: Date.now(), scans }));
+  } catch {
+    // storage unavailable (private mode / quota) - ignore
+  }
+}
+
+export function LatestModsPanel() {
+  // Stale-while-revalidate: paint last known scans immediately, refresh in the background.
+  const [scans, setScans] = useState<ScanItem[]>(() => readCachedScans());
+  const [loading, setLoading] = useState(() => readCachedScans().length === 0);
+
+  const fetchRecentScans = useCallback((signal?: AbortSignal) => {
+    // Plain GET with no custom headers: avoids a CORS preflight round trip and lets the
+    // browser/CDN honor the server's Cache-Control (public, short max-age).
+    fetch(`${API_BASE_URL}/api/scans/recent?limit=6`, { signal })
+      .then((res) => {
+        if (!res.ok) throw new Error(`HTTP ${res.status}`);
+        return res.json();
+      })
       .then((data) => {
-        if (data.scans) {
+        if (Array.isArray(data.scans)) {
           setScans(data.scans);
+          writeCachedScans(data.scans);
         }
-        setLoading(false);
       })
       .catch((err) => {
-        console.error("Failed to fetch recent scans:", err);
-        setLoading(false);
-      });
+        if (err?.name !== "AbortError") console.error("Failed to fetch recent scans:", err);
+      })
+      .finally(() => setLoading(false));
   }, []);
 
   useEffect(() => {
-    fetchRecentScans();
-    // Auto-refresh recent scans list every 20 seconds to show live activity
-    const interval = setInterval(fetchRecentScans, 20000);
-    return () => clearInterval(interval);
+    const controller = new AbortController();
+    fetchRecentScans(controller.signal);
+
+    // Refresh periodically, but only while the tab is visible.
+    const interval = setInterval(() => {
+      if (document.visibilityState === "visible") fetchRecentScans();
+    }, REFRESH_INTERVAL_MS);
+
+    return () => {
+      controller.abort();
+      clearInterval(interval);
+    };
   }, [fetchRecentScans]);
 
   if (loading && scans.length === 0) {
@@ -92,8 +125,9 @@ export function LatestModsPanel() {
             const displayName = scan.mod_name || scan.file_name;
 
             return (
-              <div
+              <Link
                 key={`${scan.sha256 || scan.mod_slug || idx}-${idx}`}
+                to={scan.sha256 ? `/report/${scan.sha256}` : scan.mod_slug ? `/mods/${scan.mod_slug}` : "/"}
                 className="flex items-center justify-between rounded-lg p-2 bg-[var(--bg-surface)]/20 hover:bg-[var(--bg-surface-raised)]/60 transition-colors border border-transparent hover:border-[var(--border-soft)]"
               >
                 <div className="flex items-center gap-2.5 overflow-hidden">
@@ -131,7 +165,7 @@ export function LatestModsPanel() {
                   {isClean ? <ShieldCheck className="h-2.5 w-2.5" /> : <AlertTriangle className="h-2.5 w-2.5" />}
                   {isClean ? "Clean" : "Risk"}
                 </span>
-              </div>
+              </Link>
             );
           })}
         </div>
