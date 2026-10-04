@@ -5,7 +5,7 @@ export function Privacy() {
     <div className="px-6 py-12 sm:px-10">
       <Seo
         title="Privacy"
-        description="How TraceRoot handles uploads, hashes, and Google Analytics."
+        description="How TraceRoot handles uploads, scan reports, and analytics."
         path="/privacy"
       />
       <div className="mx-auto max-w-2xl space-y-5 text-sm leading-relaxed text-[var(--text-muted)]">
@@ -20,9 +20,12 @@ export function Privacy() {
           private configs). Reports are retrievable by hash.
         </p>
         <p>
-          We use Google Analytics (measurement ID G-9MS9K2PV94) to understand aggregate traffic. IP
-          anonymization is enabled in the tag config. We do not use analytics to identify individual scan
-          contents.
+          We use Google Analytics to understand aggregate traffic. IP anonymization is enabled in the tag
+          config. We do not use analytics to identify individual scan contents.
+        </p>
+        <p>
+          Completed scan results are published on dedicated report pages. These pages may be publicly
+          accessible and may be discovered and indexed by search engines.
         </p>
         <p>
           URL scans only accept HTTPS Modrinth hosts. We do not fetch arbitrary websites on your behalf.
