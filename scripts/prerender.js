@@ -74,6 +74,48 @@ async function loadIndexedMods() {
   return mods;
 }
 
+async function loadReportIndex() {
+  try {
+    console.log(`[*] Fetching report index from API (${API_BASE_URL}/api/reports/index)...`);
+    // Generous timeout: the backend may be cold-starting.
+    const res = await fetch(`${API_BASE_URL}/api/reports/index?limit=500`, {
+      signal: AbortSignal.timeout(45000),
+    });
+    if (!res.ok) {
+      console.warn(`[!] Report index returned status ${res.status}`);
+      return [];
+    }
+    const data = await res.json();
+    const reports = (data.reports || []).filter((r) => /^[a-f0-9]{64}$/.test(r.sha256 || ""));
+    console.log(`[*] Fetched ${reports.length} scan reports from API.`);
+    return reports;
+  } catch (err) {
+    console.warn(`[!] Failed to fetch report index: ${err.message}`);
+    return [];
+  }
+}
+
+function verdictText(report) {
+  const v = String(report.verdict || "").toUpperCase();
+  const score = Number(report.risk_score) || 0;
+  if (score === 0 || v === "CLEAN" || v === "SAFE") return "Safe";
+  if (v === "MALICIOUS" || v === "CRITICAL" || v === "HIGH" || score >= 40) return "Malicious";
+  return "Suspicious";
+}
+
+function buildSitemapXml(staticPaths, mods, reports) {
+  const entry = (loc, freq, prio, lastmod) =>
+    `  <url><loc>${escapeXml(BASE_URL + loc)}</loc>${lastmod ? `<lastmod>${escapeXml(lastmod)}</lastmod>` : ""}<changefreq>${freq}</changefreq><priority>${prio}</priority></url>`;
+  const lines = staticPaths.map((p) => entry(p.path, p.freq, p.prio));
+  for (const m of mods) {
+    if (m.slug) lines.push(entry(`/mods/${m.slug}/`, "weekly", "0.8", (m.updated_at || "").slice(0, 10)));
+  }
+  for (const r of reports) {
+    lines.push(entry(`/report/${r.sha256}/`, "monthly", "0.5", (r.scanned_at || "").slice(0, 10)));
+  }
+  return `<?xml version="1.0" encoding="UTF-8"?>\n<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">\n${lines.join("\n")}\n</urlset>\n`;
+}
+
 function escapeXml(unsafe) {
   return String(unsafe || "")
     .replace(/&/g, "&amp;")
@@ -124,6 +166,7 @@ function injectHeadAndBody(htmlTemplate, route) {
 
 async function main() {
   const indexedMods = await loadIndexedMods();
+  const reportIndex = await loadReportIndex();
 
   const routes = [
     {
@@ -169,7 +212,7 @@ async function main() {
     {
       path: "/privacy",
       title: "Privacy Policy — TraceRoot",
-      description: "How TraceRoot handles uploads, hashes, and Google Analytics.",
+      description: "How TraceRoot handles uploads, scan reports, and analytics.",
       bodyHtml: `
         <main style="max-width: 800px; margin: 0 auto; padding: 2rem;">
           <h1>Privacy Policy</h1>
@@ -199,7 +242,8 @@ async function main() {
   // Add mod catalog entries to routes
   for (const mod of indexedMods) {
     if (!mod.slug) continue;
-    const modTitle = `Is ${mod.name} Safe? Security Scan Report | TraceRoot`;
+    const modTitle = `Is ${mod.name} Safe? Security Scan Report | TraceRoot`; // escaped by injectHeadAndBody
+    const safeName = escapeXml(mod.name);
     const modDesc = `TraceRoot safety audit report for ${mod.name} v${mod.latest_version || "latest"}. Verdict: ${mod.verdict} (Risk Score: ${mod.risk_score}/100). Verified SHA-256: ${mod.sha256 || "N/A"}.`;
     
     routes.push({
@@ -208,16 +252,53 @@ async function main() {
       description: modDesc,
       bodyHtml: `
         <main style="max-width: 1000px; margin: 0 auto; padding: 2rem;">
-          <nav><a href="/mods">&larr; Mod Catalog</a> / <span>${mod.name}</span></nav>
-          <h1>Is ${mod.name} Safe? Security Audit Report</h1>
-          <p><strong>Safety Verdict:</strong> ${mod.verdict} | <strong>Risk Score:</strong> ${mod.risk_score}/100</p>
-          <p>${mod.summary || ""}</p>
-          <p><strong>Latest Version:</strong> ${mod.latest_version || "N/A"}</p>
-          <p><strong>SHA-256 Hash:</strong> <code>${mod.sha256 || "N/A"}</code></p>
+          <nav><a href="/mods">&larr; Mod Catalog</a> / <span>${safeName}</span></nav>
+          <h1>Is ${safeName} Safe? Security Audit Report</h1>
+          <p><strong>Safety Verdict:</strong> ${escapeXml(mod.verdict)} | <strong>Risk Score:</strong> ${mod.risk_score}/100</p>
+          <p>${escapeXml(mod.summary || "")}</p>
+          <p><strong>Latest Version:</strong> ${escapeXml(mod.latest_version || "N/A")}</p>
+          <p><strong>SHA-256 Hash:</strong> <code>${escapeXml(mod.sha256 || "N/A")}</code></p>
         </main>
       `
     });
   }
+
+  // Add one pre-rendered page per scanned file so crawlers get real content without running JS
+  for (const report of reportIndex) {
+    const name = report.file_name || `${report.sha256.slice(0, 8)}.jar`;
+    const verdict = verdictText(report);
+    const score = Number(report.risk_score) || 0;
+    const loader = report.mod_loader && report.mod_loader !== "unknown" ? ` (${report.mod_loader})` : "";
+    routes.push({
+      path: `/report/${report.sha256}`,
+      title: `Is ${name} safe? ${verdict} — TraceRoot Scan Report`,
+      description: `TraceRoot static analysis of ${name}${loader}: verdict ${verdict}, risk score ${score}/100. SHA-256 ${report.sha256.slice(0, 16)}\u2026 Review findings, file hashes and scan details.`,
+      bodyHtml: `
+        <main style="max-width: 1000px; margin: 0 auto; padding: 2rem;">
+          <nav><a href="/">&larr; TraceRoot scanner</a></nav>
+          <h1>Is ${escapeXml(name)} safe? Scan report</h1>
+          <p><strong>Verdict:</strong> ${verdict} | <strong>Risk Score:</strong> ${score}/100</p>
+          <p><strong>SHA-256:</strong> <code>${escapeXml(report.sha256)}</code></p>
+          ${report.scanned_at ? `<p><strong>Last scanned:</strong> ${escapeXml(String(report.scanned_at).slice(0, 10))}</p>` : ""}
+        </main>
+      `
+    });
+  }
+
+  // Static sitemap (fallback for the Worker, which serves the backend's dynamic version when reachable)
+  const staticPaths = [
+    { path: "/", freq: "daily", prio: "1.0" },
+    { path: "/mods/", freq: "daily", prio: "0.9" },
+    { path: "/blog/", freq: "weekly", prio: "0.8" },
+    ...BLOG_POSTS.map((p) => ({ path: `/blog/${p.slug}/`, freq: "monthly", prio: "0.9" })),
+    { path: "/privacy/", freq: "yearly", prio: "0.3" },
+  ];
+  fs.writeFileSync(
+    path.join(DIST_DIR, "sitemap.xml"),
+    buildSitemapXml(staticPaths, indexedMods, reportIndex),
+    "utf-8"
+  );
+  console.log(`[+] Wrote dist/sitemap.xml (${staticPaths.length} pages, ${indexedMods.length} mods, ${reportIndex.length} reports)`);
 
   let renderedCount = 0;
   for (const route of routes) {
