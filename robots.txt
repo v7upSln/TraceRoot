@@ -1,0 +1,14 @@
+User-agent: *
+Allow: /
+Allow: /blog/
+Allow: /mods/
+Allow: /report/
+Allow: /privacy
+
+Disallow: /scan/
+Disallow: /share/
+Disallow: /og/
+Disallow: /search/
+Disallow: /health
+
+Sitemap: https://traceroot.xyz/sitemap.xml
