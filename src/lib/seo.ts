@@ -10,9 +10,10 @@ export type VerdictKind = "safe" | "suspicious" | "malicious";
 export function getVerdict(level?: string, score?: number): VerdictKind {
   const l = (level || "safe").toLowerCase();
   const s = score ?? 0;
-  if (s === 0 || l === "safe") return "safe";
   if (l === "malicious" || l === "critical" || l === "high" || s >= 40) return "malicious";
-  return "suspicious";
+  if (l === "safe" || l === "clean") return "safe";
+  if (l === "suspicious" || l === "medium" || s > 0) return "suspicious";
+  return "safe";
 }
 
 export function verdictLabel(kind: VerdictKind): string {
