@@ -98,8 +98,9 @@ async function loadReportIndex() {
 function verdictText(report) {
   const v = String(report.verdict || "").toUpperCase();
   const score = Number(report.risk_score) || 0;
-  if (score === 0 || v === "CLEAN" || v === "SAFE") return "Safe";
   if (v === "MALICIOUS" || v === "CRITICAL" || v === "HIGH" || score >= 40) return "Malicious";
+  if (v === "CLEAN" || v === "SAFE") return "Safe";
+  if (score === 0 && !v) return "Safe";
   return "Suspicious";
 }
 
@@ -108,7 +109,7 @@ function buildSitemapXml(staticPaths, mods, reports) {
     `  <url><loc>${escapeXml(BASE_URL + loc)}</loc>${lastmod ? `<lastmod>${escapeXml(lastmod)}</lastmod>` : ""}<changefreq>${freq}</changefreq><priority>${prio}</priority></url>`;
   const lines = staticPaths.map((p) => entry(p.path, p.freq, p.prio));
   for (const m of mods) {
-    if (m.slug) lines.push(entry(`/mods/${m.slug}/`, "weekly", "0.8", (m.updated_at || "").slice(0, 10)));
+    if (isSafeSlug(m.slug)) lines.push(entry(`/mods/${m.slug}/`, "weekly", "0.8", (m.updated_at || "").slice(0, 10)));
   }
   for (const r of reports) {
     lines.push(entry(`/report/${r.sha256}/`, "monthly", "0.5", (r.scanned_at || "").slice(0, 10)));
@@ -123,6 +124,13 @@ function escapeXml(unsafe) {
     .replace(/>/g, "&gt;")
     .replace(/"/g, "&quot;")
     .replace(/'/g, "&apos;");
+}
+
+function isSafeSlug(slug) {
+  return typeof slug === "string" &&
+    slug.length <= 128 &&
+    /^[a-zA-Z0-9_-]+$/.test(slug) &&
+    !/^(con|prn|aux|nul|com[1-9]|lpt[1-9])$/i.test(slug);
 }
 
 function injectHeadAndBody(htmlTemplate, route) {
@@ -241,7 +249,7 @@ async function main() {
 
   // Add mod catalog entries to routes
   for (const mod of indexedMods) {
-    if (!mod.slug) continue;
+    if (!isSafeSlug(mod.slug)) continue;
     const modTitle = `Is ${mod.name} Safe? Security Scan Report | TraceRoot`; // escaped by injectHeadAndBody
     const safeName = escapeXml(mod.name);
     const modDesc = `TraceRoot safety audit report for ${mod.name} v${mod.latest_version || "latest"}. Verdict: ${mod.verdict} (Risk Score: ${mod.risk_score}/100). Verified SHA-256: ${mod.sha256 || "N/A"}.`;
