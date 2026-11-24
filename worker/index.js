@@ -1,9 +1,57 @@
-// Cloudflare Worker entry. Static assets are served by the platform; this Worker only runs
-// for /sitemap.xml (see "run_worker_first" in wrangler.jsonc) so the sitemap can be generated
-// dynamically by the backend (it knows every scanned report) while staying on the main domain.
+// Cloudflare Worker entry. It serves cached public scan activity and generates the sitemap;
+// all other requests go directly to the static asset binding.
 
 const FETCH_TIMEOUT_MS = 8000; // backend may be cold-starting; don't make crawlers wait long
 const EDGE_TTL_SECONDS = 3600;
+const RECENT_SCANS_TTL_SECONDS = 60;
+
+async function handleRecentScans(request, env, ctx) {
+  const cache = caches.default;
+  const requestUrl = new URL(request.url);
+  const requestedLimit = Number(requestUrl.searchParams.get("limit"));
+  const limit = Number.isInteger(requestedLimit) && requestedLimit > 0
+    ? Math.min(requestedLimit, 20)
+    : 6;
+  const normalizedUrl = new URL(request.url);
+  normalizedUrl.search = `?limit=${limit}`;
+  const cacheKey = new Request(normalizedUrl.toString(), { method: "GET" });
+  const cached = await cache.match(cacheKey);
+  if (cached) return cached;
+
+  const origin = (env.API_ORIGIN || "https://traceroot-be.onrender.com").replace(/\/$/, "");
+  const upstreamUrl = new URL(`${origin}/api/scans/recent`);
+  upstreamUrl.searchParams.set("limit", String(limit));
+  const controller = new AbortController();
+  const timer = setTimeout(() => controller.abort(), FETCH_TIMEOUT_MS);
+
+  try {
+    const upstream = await fetch(upstreamUrl, {
+      signal: controller.signal,
+      headers: { Accept: "application/json" },
+    });
+    if (!upstream.ok) throw new Error(`Recent scans upstream returned ${upstream.status}`);
+
+    const data = await upstream.json();
+    if (!data || !Array.isArray(data.scans)) throw new Error("Recent scans response was invalid");
+
+    const response = new Response(JSON.stringify(data), {
+      status: 200,
+      headers: {
+        "Content-Type": "application/json; charset=utf-8",
+        "Cache-Control": `public, max-age=0, s-maxage=${RECENT_SCANS_TTL_SECONDS}`,
+      },
+    });
+    ctx.waitUntil(cache.put(cacheKey, response.clone()));
+    return response;
+  } catch {
+    return Response.json({ scans: [] }, {
+      status: 503,
+      headers: { "Cache-Control": "no-store", "Retry-After": "30" },
+    });
+  } finally {
+    clearTimeout(timer);
+  }
+}
 
 async function handleSitemap(request, env, ctx) {
   const cache = caches.default;
@@ -52,6 +100,9 @@ async function handleSitemap(request, env, ctx) {
 export default {
   async fetch(request, env, ctx) {
     const url = new URL(request.url);
+    if (url.pathname === "/api/scans/recent" && request.method === "GET") {
+      return handleRecentScans(request, env, ctx);
+    }
     if (url.pathname === "/sitemap.xml" && (request.method === "GET" || request.method === "HEAD")) {
       return handleSitemap(request, env, ctx);
     }
