@@ -30,16 +30,6 @@ It currently supports Minecraft `.jar` mods and plugins. Other formats (Call of 
 - **Loader detection:** Fabric, Forge, NeoForge, and Paper / Spigot / Bukkit.
 - **Cached, shareable reports** and a public mod directory indexed from Modrinth.
 
-## How it fits together
-
-```mermaid
-flowchart LR
-    B[Browser] -->|static pages| W[Worker]
-    B -->|scan / lookup| A[FastAPI API]
-    A --> S[Scanner<br/>isolated subprocess]
-    A --> D[(<br/>report cache)]
-```
-
 ## Limitations
 
 Static analysis flags suspicious behavior; it can't prove a file is safe, and heuristics can produce false positives and misses. Treat a `safe` result as a good sign, not a guarantee, and only download mods from sources you trust.
