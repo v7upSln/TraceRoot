@@ -128,7 +128,7 @@ export function Dropzone() {
         try {
           window.turnstile.remove(widgetIdRef.current);
           widgetIdRef.current = null;
-        } catch (e) {}
+        } catch {}
       }
     };
   }, []);
@@ -234,7 +234,7 @@ export function Dropzone() {
           try {
             window.turnstile.reset(widgetIdRef.current);
             setTurnstileToken("");
-          } catch (e) {}
+          } catch {}
         }
       }
     },
@@ -265,8 +265,17 @@ export function Dropzone() {
     const trimmedLink = link.trim();
     if (!trimmedLink) return;
 
-    const isModrinthPage = trimmedLink.startsWith("https://modrinth.com/") || trimmedLink.startsWith("https://www.modrinth.com/");
-    const isModrinthCdn = trimmedLink.startsWith("https://cdn.modrinth.com/data/");
+    let parsedLink: URL | null = null;
+    try {
+      parsedLink = new URL(trimmedLink);
+    } catch {
+      parsedLink = null;
+    }
+    const isModrinthPage = parsedLink?.protocol === "https:" &&
+      ["modrinth.com", "www.modrinth.com"].includes(parsedLink.hostname.toLowerCase());
+    const isModrinthCdn = parsedLink?.protocol === "https:" &&
+      parsedLink.hostname.toLowerCase() === "cdn.modrinth.com" &&
+      parsedLink.pathname.startsWith("/data/");
 
     if (!isModrinthPage && !isModrinthCdn) {
       setErrorMsg(
@@ -317,7 +326,7 @@ export function Dropzone() {
         try {
           window.turnstile.reset(widgetIdRef.current);
           setTurnstileToken("");
-        } catch (e) {}
+        } catch {}
       }
     }
   }
