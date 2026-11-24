@@ -15,6 +15,8 @@ import {
   FileText,
 } from "lucide-react";
 import { Seo } from "../components/Seo";
+import { getSafeHttpsUrl, getSafeModrinthUrl } from "../lib/safeUrl";
+import { getVerdict } from "../lib/seo";
 
 const API_BASE_URL = import.meta.env.VITE_API_URL || (import.meta.env.DEV ? "http://localhost:8080" : "https://traceroot-be.onrender.com");
 
@@ -110,8 +112,11 @@ export function ModReport() {
   }
 
   const { mod, report } = data;
-  const isClean = mod.verdict === "CLEAN" || mod.risk_score === 0;
-  const isSuspicious = mod.verdict === "SUSPICIOUS" || (mod.risk_score > 0 && mod.risk_score < 50);
+  const verdict = getVerdict(mod.verdict, mod.risk_score);
+  const isClean = verdict === "safe";
+  const isSuspicious = verdict === "suspicious";
+  const safeIconUrl = getSafeHttpsUrl(mod.icon_url);
+  const safeModrinthUrl = getSafeModrinthUrl(mod.modrinth_url);
 
   const formattedDownloads = mod.downloads
     ? new Intl.NumberFormat("en-US", { notation: "compact", maximumFractionDigits: 1 }).format(mod.downloads)
@@ -166,10 +171,11 @@ export function ModReport() {
       <div className="rounded-2xl border border-[var(--border)] bg-[var(--bg-surface)] p-6 shadow-sm mb-6">
         <div className="flex flex-col md:flex-row items-start md:items-center justify-between gap-6">
           <div className="flex items-center gap-4">
-            {mod.icon_url ? (
+            {safeIconUrl ? (
               <img
-                src={mod.icon_url}
+                src={safeIconUrl}
                 alt={`${mod.name} Icon`}
+                referrerPolicy="no-referrer"
                 className="h-16 w-16 rounded-xl border border-[var(--border)] object-cover bg-black/20"
                 onError={(e) => {
                   (e.target as HTMLElement).style.display = "none";
@@ -183,14 +189,16 @@ export function ModReport() {
             <div>
               <div className="flex items-center gap-2">
                 <h1 className="text-2xl font-bold text-[var(--text)]">Is {mod.name} Safe?</h1>
-                <a
-                  href={mod.modrinth_url}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="inline-flex items-center gap-1 rounded-md border border-[var(--border)] px-2 py-0.5 text-[10px] text-[var(--text-muted)] hover:text-[var(--text)]"
-                >
-                  Modrinth <ExternalLink className="h-3 w-3" />
-                </a>
+                {safeModrinthUrl && (
+                  <a
+                    href={safeModrinthUrl}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="inline-flex items-center gap-1 rounded-md border border-[var(--border)] px-2 py-0.5 text-[10px] text-[var(--text-muted)] hover:text-[var(--text)]"
+                  >
+                    Modrinth <ExternalLink className="h-3 w-3" />
+                  </a>
+                )}
               </div>
               <p className="mt-1 text-xs text-[var(--text-muted)] max-w-xl">{mod.summary}</p>
               

@@ -2,6 +2,7 @@ import { useEffect, useState, useMemo } from "react";
 import { Link } from "react-router-dom";
 import { Search, ShieldCheck, AlertTriangle, Loader2, ArrowRight } from "lucide-react";
 import { Seo } from "../components/Seo";
+import { getSafeHttpsUrl } from "../lib/safeUrl";
 
 const API_BASE_URL = import.meta.env.VITE_API_URL || (import.meta.env.DEV ? "http://localhost:8080" : "https://traceroot-be.onrender.com");
 
@@ -87,6 +88,7 @@ export function ModsDirectory() {
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
           {filteredMods.map((mod) => {
             const isClean = mod.verdict === "CLEAN" || mod.risk_score === 0;
+            const safeIconUrl = getSafeHttpsUrl(mod.icon_url);
             const formattedDownloads = mod.downloads
               ? new Intl.NumberFormat("en-US", { notation: "compact", maximumFractionDigits: 1 }).format(mod.downloads)
               : "";
@@ -100,10 +102,11 @@ export function ModsDirectory() {
                 <div>
                   <div className="flex items-start justify-between gap-3">
                     <div className="flex items-center gap-3">
-                      {mod.icon_url ? (
+                      {safeIconUrl ? (
                         <img
-                          src={mod.icon_url}
+                          src={safeIconUrl}
                           alt={mod.name}
+                          referrerPolicy="no-referrer"
                           className="h-10 w-10 rounded-lg border border-[var(--border)] object-cover bg-black/20 shrink-0"
                           onError={(e) => {
                             (e.target as HTMLElement).style.display = "none";

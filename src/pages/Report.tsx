@@ -32,6 +32,7 @@ import { ModLoaderIcon } from "../components/ModLoaderIcon";
 import { Seo } from "../components/Seo";
 import { ShareModal } from "../components/ShareModal";
 import { SITE_URL, getVerdict, verdictLabel } from "../lib/seo";
+import { getSafeHttpsUrl } from "../lib/safeUrl";
 
 const API_BASE_URL = import.meta.env.VITE_API_URL || (import.meta.env.DEV ? "http://localhost:8080" : "https://traceroot-be.onrender.com");
 
@@ -1531,6 +1532,7 @@ export function Report() {
                 {libraryNotes.map((note, idx) => {
                   const meta = NOTE_TYPE_META[note.type] ?? { label: note.type.replace(/_/g, " "), icon: Box };
                   const Icon = meta.icon;
+                  const safeNoteUrl = getSafeHttpsUrl(note.url);
                   return (
                     <div
                       key={idx}
@@ -1543,9 +1545,9 @@ export function Report() {
                             {note.label || meta.label}
                           </span>
                         </div>
-                        {note.url && (
+                        {safeNoteUrl && (
                           <a
-                            href={note.url}
+                            href={safeNoteUrl}
                             target="_blank"
                             rel="noreferrer"
                             className="text-xs text-[var(--accent)] hover:underline inline-flex items-center gap-1"
