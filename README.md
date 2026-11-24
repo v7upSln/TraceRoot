@@ -5,7 +5,6 @@
 <p align="center">
   <a href="LICENSE"><img alt="License: MIT" src="https://img.shields.io/badge/license-MIT-6c7cf0?style=flat-square&labelColor=171a20"></a>
   <a href="https://traceroot.xyz"><img alt="Website status" src="https://img.shields.io/website?url=https%3A%2F%2Ftraceroot.xyz&label=traceroot.xyz&up_message=online&up_color=4ade80&down_message=offline&down_color=f87171&style=flat-square&labelColor=171a20"></a>
-  <img alt="Frontend: React" src="https://img.shields.io/badge/frontend-React%20%C2%B7%20TypeScript%20%C2%B7%20Vite-6c7cf0?style=flat-square&logo=react&logoColor=white&labelColor=171a20">
 </p>
 
 <p align="center">
